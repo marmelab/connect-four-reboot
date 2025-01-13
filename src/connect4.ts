@@ -10,15 +10,15 @@ export interface GameState {
   boardState: Array<Array<number>>;
 }
 
-function printBoardStateToConsole(state: String): void {
-  console.log(state);
+function printBoardStateToConsole(boardState: String): void {
+  console.log(boardState);
 }
 
-function boardStateToString(state: Array<Array<number>>): String {
+function boardStateToString(boardState: GameState["boardState"]): String {
   const resultDisplay: Array<String> = [];
   resultDisplay.push(`${boardLayout.TOP}\n`);
 
-  state.forEach((line: Array<number>) => {
+  boardState.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
       resultDisplay.push(
         `${boardLayout.SEPARATOR} ${token === 1 ? boardLayout.PLAYER_ONE_TOKEN : token === 2 ? boardLayout.PLAYER_TWO_TOKEN : boardLayout.EMPTY_TOKEN} `,
@@ -32,8 +32,8 @@ function boardStateToString(state: Array<Array<number>>): String {
   return resultDisplay.join("");
 }
 
-function checkBoardStateConsistency(state: Array<Array<number>>) {
-  const transposedState = transpose(state);
+function checkBoardStateConsistency(boardState: GameState["boardState"]) {
+  const transposedState = transpose(boardState);
 
   // check for no flying token
   const hasFlyingTokenError = transposedState.reduce(
@@ -74,8 +74,8 @@ function checkBoardStateConsistency(state: Array<Array<number>>) {
 }
 
 // Used to transpose the game board, allowing computing using colums instead lines
-function transpose(state: Array<Array<number>>) {
-  return state[0].map((_, colIndex) => state.map((row) => row[colIndex]));
+function transpose(matrix: Array<Array<number>>) {
+  return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
 }
 
 export function runConnect4(gameState: GameState) {
