@@ -53,7 +53,7 @@ function checkBoardStateConsistency(boardState: GameState["boardState"]) {
     throw new SyntaxError("Given game state text contains missplaced token(s)");
   }
 
-  // Check for nb token. Each player has the same number +-1.
+  // Check for nb tokens. Each player has the same number +-1.
   const nbTokens = transposedState
     .flat(2)
     .reduce(
