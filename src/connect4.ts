@@ -32,7 +32,10 @@ function boardStateToString(boardState: GameState["boardState"]): String {
   return resultDisplay.join("");
 }
 
-function checkBoardStateConsistency(boardState: GameState["boardState"]) {
+/**
+ * @throws SyntaxError if the board is invalid
+ */
+function checkBoardStateConsistency(boardState: GameState["boardState"]): void {
   const transposedState = transpose(boardState);
 
   // check for no flying token
