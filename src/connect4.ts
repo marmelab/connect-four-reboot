@@ -10,23 +10,26 @@ export interface GameState {
   boardState: Array<Array<number>>;
 }
 
-function printBoardState(state: Array<Array<number>>): void {
-  // print top
-  console.log(boardLayout.TOP);
+function printBoardStateToConsole(state: String): void {
+  console.log(state);
+}
 
-  // print board state containing
+function boardStateToString(state: Array<Array<number>>): String {
+  const resultDisplay: Array<String> = [];
+  resultDisplay.push(`${boardLayout.TOP}\n`);
+
   state.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
-      process.stdout.write(
-        boardLayout.SEPARATOR +
-          ` ${token === 1 ? boardLayout.PLAYER_ONE_TOKEN : token === 2 ? boardLayout.PLAYER_TWO_TOKEN : boardLayout.EMPTY_TOKEN} `,
+      resultDisplay.push(
+        `${boardLayout.SEPARATOR} ${token === 1 ? boardLayout.PLAYER_ONE_TOKEN : token === 2 ? boardLayout.PLAYER_TWO_TOKEN : boardLayout.EMPTY_TOKEN} `,
       );
     });
-    console.log(boardLayout.SEPARATOR);
+    resultDisplay.push(`${boardLayout.SEPARATOR}\n`);
   });
 
-  // print bottom
-  console.log(boardLayout.BOTTOM);
+  resultDisplay.push(`${boardLayout.BOTTOM}\n`);
+
+  return resultDisplay.join("");
 }
 
 function checkBoardStateConsistency(state: Array<Array<number>>) {
@@ -77,5 +80,5 @@ function transpose(state: Array<Array<number>>) {
 
 export function runConnect4(gameState: GameState) {
   checkBoardStateConsistency(gameState.boardState);
-  printBoardState(gameState.boardState);
+  printBoardStateToConsole(boardStateToString(gameState.boardState));
 }
