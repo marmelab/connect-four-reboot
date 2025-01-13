@@ -7,7 +7,7 @@ export async function main() {
     const data = fs.readFileSync(process.argv[2], "utf-8");
     runConnect4({ boardState: JSON.parse(data) });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 
