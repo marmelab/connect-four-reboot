@@ -30,9 +30,14 @@ export interface GameState {
 }
 
 export function getPlayerToken(playerNum: PlayerNum) {
-  return playerNum === PlayerNum.p1
-    ? boardLayout.PLAYER_ONE_TOKEN
-    : boardLayout.PLAYER_TWO_TOKEN;
+  switch (playerNum) {
+    case PlayerNum.p1:
+      return boardLayout.PLAYER_ONE_TOKEN;
+    case PlayerNum.p2:
+      return boardLayout.PLAYER_TWO_TOKEN;
+    case PlayerNum.empty:
+      return boardLayout.EMPTY_TOKEN;
+  }
 }
 
 export function printBoardStateToConsole(boardState: String): void {
@@ -85,7 +90,7 @@ export function playToken(
   }
 
   boardState[(index > -1 ? index : boardLayout.NB_ROWS) - 1][column - 1] = pNum;
-  return boardState;
+  return { ...boardState };
 }
 
 export function countNbTokens(boardState: BoardState): [number, number] {
