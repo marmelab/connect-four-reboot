@@ -34,7 +34,6 @@ const correctGameState: TestingGameState = {
   1   2   3   4   5   6   7  
 
 -- You are first player: o --
-
 `,
   p1Num: PlayerNum.p1,
   p2Num: PlayerNum.p2,
