@@ -5,6 +5,7 @@ import {
   checkBoardStateConsistency,
   GameState,
   printBoardStateToConsole,
+  runConnect4,
 } from "./connect4";
 interface TestingGameState extends GameState {
   boardDisplay?: String;
@@ -111,4 +112,10 @@ test("checkBoardStateConsistency nb tokens p2", () => {
   expect(() =>
     checkBoardStateConsistency(nbTokenIncorrectGameState2.boardState),
   ).toThrowError("Given game state text contains wrong number of token(s)");
+});
+
+test("runConnect4", () => {
+  const consoleSpy = vi.spyOn(console, "log");
+  runConnect4(correctGameState);
+  expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
 });
