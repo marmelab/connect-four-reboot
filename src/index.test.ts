@@ -76,13 +76,6 @@ const nbTokenIncorrectGameState2: TestingGameState = {
   ],
 };
 
-// test("main function", () => {
-//   const consoleSpy = vi.spyOn(console, "log");
-//   main();
-//   expect(consoleSpy).toHaveBeenCalledWith("Hello, world");
-//   consoleSpy.mockRestore();
-// });
-
 test("boardStateToString", () => {
   expect(boardStateToString(correctGameState.boardState)).toBe(
     correctGameState.boardDisplay,
