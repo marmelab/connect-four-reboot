@@ -1,4 +1,4 @@
-import { expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { main } from "./index";
 import {
   boardStateToString,
@@ -77,45 +77,63 @@ const nbTokenIncorrectGameState2: TestingGameState = {
   ],
 };
 
-test("boardStateToString", () => {
+test("Got a layouted board using 'boardStateToString'", () => {
   expect(boardStateToString(correctGameState.boardState)).toBe(
     correctGameState.boardDisplay,
   );
 });
 
-test("printBoardStateToConsole", () => {
+test("Displaying the board using 'printBoardStateToConsole'", () => {
   const consoleSpy = vi.spyOn(console, "log");
   const testingString: string = "Test console display";
+
   printBoardStateToConsole(testingString);
+
   expect(consoleSpy).toHaveBeenCalledWith(testingString);
 });
 
-test("checkBoardStateConsistency flying token 1", () => {
-  expect(() =>
-    checkBoardStateConsistency(flyingTokenIncorrectGameState1.boardState),
-  ).toThrowError("Given game state text contains missplaced token(s)");
+describe("When a board state contains 'flying tokens', it", () => {
+  test("throws an error (at position [0,0])", () => {
+    expect(() =>
+      checkBoardStateConsistency(flyingTokenIncorrectGameState1.boardState),
+    ).toThrowError("Given game state text contains missplaced token(s)");
+  });
+
+  test("throws an error (in the middle of the board game)", () => {
+    expect(() =>
+      checkBoardStateConsistency(flyingTokenIncorrectGameState2.boardState),
+    ).toThrowError("Given game state text contains missplaced token(s)");
+  });
 });
 
-test("checkBoardStateConsistency flying token 2", () => {
-  expect(() =>
-    checkBoardStateConsistency(flyingTokenIncorrectGameState2.boardState),
-  ).toThrowError("Given game state text contains missplaced token(s)");
+describe("When a board state contains a wrong number of token, it", () => {
+  test("throws an error for p1", () => {
+    expect(() =>
+      checkBoardStateConsistency(nbTokenIncorrectGameState1.boardState),
+    ).toThrowError("Given game state text contains wrong number of token(s)");
+  });
+
+  test("throws an error for p2", () => {
+    expect(() =>
+      checkBoardStateConsistency(nbTokenIncorrectGameState2.boardState),
+    ).toThrowError("Given game state text contains wrong number of token(s)");
+  });
 });
 
-test("checkBoardStateConsistency nb tokens p1", () => {
-  expect(() =>
-    checkBoardStateConsistency(nbTokenIncorrectGameState1.boardState),
-  ).toThrowError("Given game state text contains wrong number of token(s)");
-});
+describe("Entry point 'runConnect4'", () => {
+  test("displays a game board with correct game state", () => {
+    const consoleSpy = vi.spyOn(console, "log");
 
-test("checkBoardStateConsistency nb tokens p2", () => {
-  expect(() =>
-    checkBoardStateConsistency(nbTokenIncorrectGameState2.boardState),
-  ).toThrowError("Given game state text contains wrong number of token(s)");
-});
+    runConnect4(correctGameState);
 
-test("runConnect4", () => {
-  const consoleSpy = vi.spyOn(console, "log");
-  runConnect4(correctGameState);
-  expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
+    expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
+  });
+
+  test("throws an error with incorrect game state", () => {
+    const consoleSpy = vi.spyOn(console, "log");
+
+    expect(() => runConnect4(flyingTokenIncorrectGameState1)).toThrowError(
+      "Given game state text contains missplaced token(s)",
+    );
+  });
 });
