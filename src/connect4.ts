@@ -66,7 +66,7 @@ export function boardStateToString(gameState: GameState): String {
 }
 
 /**
- * @throws Error if the column is already full
+ * @throws Error if the played column is already full
  */
 export function playToken(
   boardState: BoardState,
@@ -75,7 +75,6 @@ export function playToken(
 ): BoardState {
   const tBoardState = transpose(boardState);
   const index: number = tBoardState[column - 1].findIndex((elem) => elem > 0);
-  console.log(index);
   if (index === 0) {
     throw new Error(
       boardLayout.ERROR_COLUMN_FULL.replace(
