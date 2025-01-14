@@ -1,8 +1,13 @@
+import * as readline from "readline";
+
 enum boardLayout {
   PLACEHOLDER = "$",
   TOP = "+---+---+---+---+---+---+---+",
   BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
-  INFORMATIONS = "\n-- You are first player: " + PLACEHOLDER + " --\n",
+  INFORMATIONS = "\n-- You are first player: " + PLACEHOLDER + " --",
+  PROMPT = "Please enter the column number you want to play your token $ [1-7]: ",
+  ERROR_INVALID_ANSWER = "Invalid column number.\n",
+  ERROR_COLUMN_FULL = "Cannot add token into column $ which is full.\n",
   SEPARATOR = "|",
   PLAYER_ONE_TOKEN = "o",
   PLAYER_TWO_TOKEN = "x",
@@ -24,7 +29,14 @@ export interface GameState {
   p2Num: PlayerNum;
 }
 
+export function getPlayerToken(playerNum: PlayerNum) {
+  return playerNum === PlayerNum.p1
+    ? boardLayout.PLAYER_ONE_TOKEN
+    : boardLayout.PLAYER_TWO_TOKEN;
+}
+
 export function printBoardStateToConsole(boardState: String): void {
+  console.clear();
   console.log(boardState);
 }
 
@@ -44,16 +56,37 @@ export function boardStateToString(gameState: GameState): String {
 
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
-  const p1Token =
-    gameState.p1Num === PlayerNum.p1
-      ? boardLayout.PLAYER_ONE_TOKEN
-      : boardLayout.PLAYER_TWO_TOKEN;
+  const p1Token = getPlayerToken(PlayerNum.p1);
 
   resultDisplay.push(
     `${boardLayout.INFORMATIONS.replace(boardLayout.PLACEHOLDER, p1Token)}\n`,
   );
 
   return resultDisplay.join("");
+}
+
+/**
+ * @throws Error if the column is already full
+ */
+export function playToken(
+  boardState: BoardState,
+  column: number,
+  pNum: number,
+): BoardState {
+  const tBoardState = transpose(boardState);
+  const index: number = tBoardState[column - 1].findIndex((elem) => elem > 0);
+  console.log(index);
+  if (index === 0) {
+    throw new Error(
+      boardLayout.ERROR_COLUMN_FULL.replace(
+        boardLayout.PLACEHOLDER,
+        "" + column,
+      ),
+    );
+  }
+
+  boardState[(index > -1 ? index : boardLayout.NB_ROWS) - 1][column - 1] = pNum;
+  return boardState;
 }
 
 export function countNbTokens(boardState: BoardState): [number, number] {
@@ -137,7 +170,51 @@ export function initBoardState(stateConfigFile: BoardState): GameState {
   return result;
 }
 
+export function promptRead(rl: readline.Interface, gameState: GameState) {
+  rl.question(
+    boardLayout.PROMPT.replace(
+      boardLayout.PLACEHOLDER,
+      getPlayerToken(PlayerNum.p1),
+    ),
+    (answer) => {
+      const numAnswer = Number(answer);
+      switch (true) {
+        case isNaN(numAnswer) ||
+          numAnswer <= 0 ||
+          numAnswer > boardLayout.NB_COLUMN:
+          console.log(boardLayout.ERROR_INVALID_ANSWER);
+          promptRead(rl, gameState);
+          break;
+        case numAnswer > 0 && numAnswer < 8:
+          try {
+            playToken(gameState.boardState, numAnswer, PlayerNum.p1);
+          } catch (e) {
+            console.log(
+              boardLayout.ERROR_COLUMN_FULL.replace(
+                boardLayout.PLACEHOLDER,
+                `${numAnswer}`,
+              ),
+            );
+            promptRead(rl, gameState);
+            break;
+          }
+          printBoardStateToConsole(boardStateToString(gameState));
+          rl.close();
+      }
+    },
+  );
+}
+
+export function prompt(gameState: GameState) {
+  const rl: readline.Interface = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  promptRead(rl, gameState);
+}
+
 export function runConnect4(stateConfigFile: BoardState) {
   const gameState = initBoardState(stateConfigFile);
   printBoardStateToConsole(boardStateToString(gameState));
+  prompt(gameState);
 }
