@@ -10,13 +10,15 @@ export interface GameState {
   boardState: Array<Array<number>>;
 }
 
-function printBoardStateToConsole(boardState: String): void {
+export function printBoardStateToConsole(boardState: String): void {
   console.log(boardState);
 }
 
-function boardStateToString(boardState: GameState["boardState"]): String {
+export function boardStateToString(
+  boardState: GameState["boardState"],
+): String {
   const resultDisplay: Array<String> = [];
-  resultDisplay.push(`${boardLayout.TOP}\n`);
+  resultDisplay.push(`\n${boardLayout.TOP}\n`);
 
   boardState.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
@@ -35,7 +37,9 @@ function boardStateToString(boardState: GameState["boardState"]): String {
 /**
  * @throws SyntaxError if the board is invalid
  */
-function checkBoardStateConsistency(boardState: GameState["boardState"]): void {
+export function checkBoardStateConsistency(
+  boardState: GameState["boardState"],
+): void {
   const transposedState = transpose(boardState);
 
   // check for no flying token
