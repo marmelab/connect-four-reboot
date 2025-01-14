@@ -35,13 +35,10 @@ export function boardStateToString(
 }
 
 /**
- * @throws SyntaxError if the board is invalid
+ * @throws SyntaxError if the board contains flying tokens
  */
-export function checkBoardStateConsistency(
-  boardState: GameState["boardState"],
-): void {
+function checkForProhibitedFlyingTokens(boardState: GameState["boardState"]) {
   const transposedState = transpose(boardState);
-
   // check for no flying token
   const hasFlyingTokenError = transposedState.reduce(
     (hasColumnError, column) => {
@@ -59,9 +56,15 @@ export function checkBoardStateConsistency(
   if (hasFlyingTokenError) {
     throw new SyntaxError("Given game state text contains missplaced token(s)");
   }
+}
 
-  // Check for nb tokens. Each player has the same number +-1.
-  const nbTokens = transposedState
+/**
+ * @throws SyntaxError if the board contains bad number of tokens by player
+ *
+ *  Each player has the same number +-1.
+ */
+function checkForWrongNumberOfTokens(boardState: GameState["boardState"]) {
+  const nbTokens = boardState
     .flat(2)
     .reduce(
       ([nbP1Token, nbP2Token], column) =>
@@ -78,6 +81,16 @@ export function checkBoardStateConsistency(
       "Given game state text contains wrong number of token(s)",
     );
   }
+}
+
+/**
+ * @throws SyntaxError if the board is invalid
+ */
+export function checkBoardStateConsistency(
+  boardState: GameState["boardState"],
+): void {
+  checkForProhibitedFlyingTokens(boardState);
+  checkForWrongNumberOfTokens(boardState);
 }
 
 // Used to transpose the game board, allowing computing using colums instead lines
