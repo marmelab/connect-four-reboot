@@ -4,6 +4,7 @@ import {
   boardStateToString,
   checkBoardStateConsistency,
   GameState,
+  PlayerNum,
   printBoardStateToConsole,
   runConnect4,
 } from "./connect4";
@@ -31,6 +32,8 @@ const correctGameState: TestingGameState = {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 `,
+  p1Num: PlayerNum.p1,
+  p2Num: PlayerNum.p2,
 };
 
 const flyingTokenIncorrectGameState1: TestingGameState = {
@@ -42,6 +45,8 @@ const flyingTokenIncorrectGameState1: TestingGameState = {
     [0, 1, 1, 2, 1, 1, 1],
     [0, 2, 2, 1, 1, 2, 2],
   ],
+  p1Num: PlayerNum.p1,
+  p2Num: PlayerNum.p2,
 };
 
 const flyingTokenIncorrectGameState2: TestingGameState = {
@@ -53,6 +58,8 @@ const flyingTokenIncorrectGameState2: TestingGameState = {
     [0, 1, 1, 2, 1, 1, 1],
     [0, 2, 2, 1, 1, 2, 2],
   ],
+  p1Num: PlayerNum.p1,
+  p2Num: PlayerNum.p2,
 };
 
 const nbTokenIncorrectGameState1: TestingGameState = {
@@ -64,6 +71,8 @@ const nbTokenIncorrectGameState1: TestingGameState = {
     [1, 1, 1, 2, 1, 1, 1],
     [1, 2, 2, 1, 1, 2, 2],
   ],
+  p1Num: PlayerNum.p1,
+  p2Num: PlayerNum.p2,
 };
 
 const nbTokenIncorrectGameState2: TestingGameState = {
@@ -75,6 +84,8 @@ const nbTokenIncorrectGameState2: TestingGameState = {
     [0, 1, 1, 2, 1, 1, 1],
     [0, 2, 2, 1, 1, 2, 2],
   ],
+  p1Num: PlayerNum.p1,
+  p2Num: PlayerNum.p2,
 };
 
 test("Got a layouted board using 'boardStateToString'", () => {
@@ -124,7 +135,7 @@ describe("Entry point 'runConnect4'", () => {
   test("displays a game board with correct game state", () => {
     const consoleSpy = vi.spyOn(console, "log");
 
-    runConnect4(correctGameState);
+    runConnect4(correctGameState.boardState);
 
     expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
   });
@@ -132,8 +143,8 @@ describe("Entry point 'runConnect4'", () => {
   test("throws an error with incorrect game state", () => {
     const consoleSpy = vi.spyOn(console, "log");
 
-    expect(() => runConnect4(flyingTokenIncorrectGameState1)).toThrowError(
-      "Given game state text contains missplaced token(s)",
-    );
+    expect(() =>
+      runConnect4(flyingTokenIncorrectGameState1.boardState),
+    ).toThrowError("Given game state text contains missplaced token(s)");
   });
 });

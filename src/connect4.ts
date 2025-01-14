@@ -5,18 +5,28 @@ enum boardLayout {
   PLAYER_ONE_TOKEN = "o",
   PLAYER_TWO_TOKEN = "x",
   EMPTY_TOKEN = " ",
+  NB_ROWS = 6,
+  NB_COLUMN = 7,
 }
+
+export enum PlayerNum {
+  p1 = 1,
+  p2 = 2,
+  empty = 0,
+}
+export type BoardState = Array<Array<PlayerNum>>;
+
 export interface GameState {
-  boardState: Array<Array<number>>;
+  boardState: BoardState;
+  p1Num: PlayerNum;
+  p2Num: PlayerNum;
 }
 
 export function printBoardStateToConsole(boardState: String): void {
   console.log(boardState);
 }
 
-export function boardStateToString(
-  boardState: GameState["boardState"],
-): String {
+export function boardStateToString(boardState: BoardState): String {
   const resultDisplay: Array<String> = [];
   resultDisplay.push(`\n${boardLayout.TOP}\n`);
 
@@ -34,10 +44,24 @@ export function boardStateToString(
   return resultDisplay.join("");
 }
 
+export function countNbTokens(boardState: BoardState): [number, number] {
+  return boardState
+    .flat(2)
+    .reduce(
+      ([nbP1Token, nbP2Token], column) =>
+        column === 1
+          ? [nbP1Token + 1, nbP2Token]
+          : column === 2
+            ? [nbP1Token, nbP2Token + 1]
+            : [nbP1Token, nbP2Token],
+      [0, 0],
+    );
+}
+
 /**
  * @throws SyntaxError if the board contains flying tokens
  */
-function checkForProhibitedFlyingTokens(boardState: GameState["boardState"]) {
+function checkForProhibitedFlyingTokens(boardState: BoardState) {
   const transposedState = transpose(boardState);
   // check for no flying token
   const hasFlyingTokenError = transposedState.reduce(
@@ -63,18 +87,8 @@ function checkForProhibitedFlyingTokens(boardState: GameState["boardState"]) {
  *
  *  Each player has the same number +-1.
  */
-function checkForWrongNumberOfTokens(boardState: GameState["boardState"]) {
-  const nbTokens = boardState
-    .flat(2)
-    .reduce(
-      ([nbP1Token, nbP2Token], column) =>
-        column === 1
-          ? [nbP1Token + 1, nbP2Token]
-          : column === 2
-            ? [nbP1Token, nbP2Token + 1]
-            : [nbP1Token, nbP2Token],
-      [0, 0],
-    );
+function checkForWrongNumberOfTokens(boardState: BoardState) {
+  const nbTokens: [number, number] = countNbTokens(boardState);
   const hasNbTokensError = Math.abs(nbTokens[0] - nbTokens[1]) > 1;
   if (hasNbTokensError) {
     throw new SyntaxError(
@@ -86,9 +100,7 @@ function checkForWrongNumberOfTokens(boardState: GameState["boardState"]) {
 /**
  * @throws SyntaxError if the board is invalid
  */
-export function checkBoardStateConsistency(
-  boardState: GameState["boardState"],
-): void {
+export function checkBoardStateConsistency(boardState: BoardState): void {
   checkForProhibitedFlyingTokens(boardState);
   checkForWrongNumberOfTokens(boardState);
 }
@@ -98,7 +110,22 @@ function transpose(matrix: Array<Array<number>>) {
   return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
 }
 
-export function runConnect4(gameState: GameState) {
-  checkBoardStateConsistency(gameState.boardState);
+export function initBoardState(stateConfigFile: BoardState): GameState {
+  const result = {
+    boardState: stateConfigFile,
+    playedMoves: [],
+    currentBoardState: stateConfigFile,
+    p1Num: 1,
+    p2Num: 2,
+  };
+  const nbTokens: [number, number] = countNbTokens(result.boardState);
+  result.p1Num = nbTokens[0] > nbTokens[1] ? PlayerNum.p2 : PlayerNum.p1;
+  result.p2Num = result.p1Num === PlayerNum.p1 ? PlayerNum.p2 : PlayerNum.p1;
+  checkBoardStateConsistency(result.boardState);
+  return result;
+}
+
+export function runConnect4(stateConfigFile: BoardState) {
+  const gameState = initBoardState(stateConfigFile);
   printBoardStateToConsole(boardStateToString(gameState.boardState));
 }
