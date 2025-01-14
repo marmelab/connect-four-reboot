@@ -1,6 +1,8 @@
 enum boardLayout {
+  PLACEHOLDER = "$",
   TOP = "+---+---+---+---+---+---+---+",
   BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
+  INFORMATIONS = "\n-- You are first player: " + PLACEHOLDER + " --\n",
   SEPARATOR = "|",
   PLAYER_ONE_TOKEN = "o",
   PLAYER_TWO_TOKEN = "x",
@@ -26,11 +28,12 @@ export function printBoardStateToConsole(boardState: String): void {
   console.log(boardState);
 }
 
-export function boardStateToString(boardState: BoardState): String {
+export function boardStateToString(gameState: GameState): String {
   const resultDisplay: Array<String> = [];
+
   resultDisplay.push(`\n${boardLayout.TOP}\n`);
 
-  boardState.forEach((line: Array<number>) => {
+  gameState.boardState.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
       resultDisplay.push(
         `${boardLayout.SEPARATOR} ${token === 1 ? boardLayout.PLAYER_ONE_TOKEN : token === 2 ? boardLayout.PLAYER_TWO_TOKEN : boardLayout.EMPTY_TOKEN} `,
@@ -40,6 +43,15 @@ export function boardStateToString(boardState: BoardState): String {
   });
 
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
+
+  const p1Token =
+    gameState.p1Num === PlayerNum.p1
+      ? boardLayout.PLAYER_ONE_TOKEN
+      : boardLayout.PLAYER_TWO_TOKEN;
+
+  resultDisplay.push(
+    `${boardLayout.INFORMATIONS.replace(boardLayout.PLACEHOLDER, p1Token)}\n`,
+  );
 
   return resultDisplay.join("");
 }
@@ -127,5 +139,5 @@ export function initBoardState(stateConfigFile: BoardState): GameState {
 
 export function runConnect4(stateConfigFile: BoardState) {
   const gameState = initBoardState(stateConfigFile);
-  printBoardStateToConsole(boardStateToString(gameState.boardState));
+  printBoardStateToConsole(boardStateToString(gameState));
 }

@@ -8,6 +8,7 @@ import {
   printBoardStateToConsole,
   runConnect4,
 } from "./connect4";
+
 interface TestingGameState extends GameState {
   boardDisplay?: String;
 }
@@ -31,6 +32,9 @@ const correctGameState: TestingGameState = {
 |   | x | x | o | o | x | x |
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
+
+-- You are first player: o --
+
 `,
   p1Num: PlayerNum.p1,
   p2Num: PlayerNum.p2,
@@ -89,7 +93,7 @@ const nbTokenIncorrectGameState2: TestingGameState = {
 };
 
 test("Got a layouted board using 'boardStateToString'", () => {
-  expect(boardStateToString(correctGameState.boardState)).toBe(
+  expect(boardStateToString(correctGameState)).toBe(
     correctGameState.boardDisplay,
   );
 });
