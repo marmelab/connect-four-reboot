@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "node --loader ts-node/esm --no-warnings=ExperimentalWarning src/index.ts",
+    "dev": "node --inspect --loader ts-node/esm --no-warnings=ExperimentalWarning src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,json,css,scss,md}\""
@@ -19,10 +19,7 @@
   "author": "Marmelab",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.4.5",
-    "prettier": "^3.4.2",
     "ts-node": "^10.9.1",
-    "tsx": "^4.19.2",
     "typescript": "^5.1.6",
     "vitest": "^0.34.1"
   }
