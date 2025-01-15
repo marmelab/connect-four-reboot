@@ -1,10 +1,10 @@
 import * as readline from "readline";
 
-enum boardLayout {
+export enum boardLayout {
   PLACEHOLDER = "$",
   TOP = "+---+---+---+---+---+---+---+",
   BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
-  INFORMATIONS = "\n-- You are first player: " + PLACEHOLDER + " --",
+  INFORMATIONS = "\n-- You are player: " + PLACEHOLDER + " --",
   PROMPT = "Please enter the column number you want to play your token $ [1-7]: ",
   ERROR_INVALID_ANSWER = "Invalid column number.\n",
   ERROR_COLUMN_FULL = "Cannot add token into column $ which is full.\n",
@@ -29,7 +29,7 @@ export interface GameState {
   p2Num: PlayerNum;
 }
 
-export function getPlayerToken(playerNum: PlayerNum) {
+export function getPlayerTokenChar(playerNum: PlayerNum) {
   switch (playerNum) {
     case PlayerNum.p1:
       return boardLayout.PLAYER_ONE_TOKEN;
@@ -53,7 +53,13 @@ export function boardStateToString(gameState: GameState): String {
   gameState.boardState.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
       resultDisplay.push(
-        `${boardLayout.SEPARATOR} ${token === 1 ? boardLayout.PLAYER_ONE_TOKEN : token === 2 ? boardLayout.PLAYER_TWO_TOKEN : boardLayout.EMPTY_TOKEN} `,
+        `${boardLayout.SEPARATOR} ${
+          token === 1
+            ? boardLayout.PLAYER_ONE_TOKEN
+            : token === 2
+              ? boardLayout.PLAYER_TWO_TOKEN
+              : boardLayout.EMPTY_TOKEN
+        } `,
       );
     });
     resultDisplay.push(`${boardLayout.SEPARATOR}\n`);
@@ -61,8 +67,8 @@ export function boardStateToString(gameState: GameState): String {
 
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
-  const p1Token = getPlayerToken(PlayerNum.p1);
-
+  // Player information
+  const p1Token = getPlayerTokenChar(PlayerNum.p1);
   resultDisplay.push(
     `${boardLayout.INFORMATIONS.replace(boardLayout.PLACEHOLDER, p1Token)}\n`,
   );
@@ -78,11 +84,19 @@ export function playToken(
   column: number,
   pNum: number,
 ): BoardState {
-  const res = structuredClone(boardState);
+  const result = structuredClone(boardState);
 
-  const transposedRes = transpose(res);
-  const index: number = transposedRes[column - 1].findIndex((elem) => elem > 0);
-  if (index === 0) {
+  // Transpose the game board, allowing computing using colums instead lines
+  const transposedBoardState = transpose(result);
+
+  // highest token's index=0 ; lowest token's index = boardLayout.NB_ROWS - 1
+  // Got the highest token's index
+  const highestTokenIndex: number = transposedBoardState[column - 1].findIndex(
+    (elem) => elem > 0,
+  );
+
+  // highestTokenIndex = 0 => the column is full
+  if (highestTokenIndex === 0) {
     throw new Error(
       boardLayout.ERROR_COLUMN_FULL.replace(
         boardLayout.PLACEHOLDER,
@@ -90,30 +104,22 @@ export function playToken(
       ),
     );
   }
-  res[(index > -1 ? index : boardLayout.NB_ROWS) - 1][column - 1] = pNum;
+  // highestTokenIndex = -1 => the column is empty
+  const newTokenIndex =
+    (highestTokenIndex > -1 ? highestTokenIndex : boardLayout.NB_ROWS) - 1;
 
-  return res;
-}
+  result[newTokenIndex][column - 1] = pNum;
 
-export function countNbTokens(boardState: BoardState): [number, number] {
-  return boardState
-    .flat(2)
-    .reduce(
-      ([nbP1Token, nbP2Token], column) =>
-        column === 1
-          ? [nbP1Token + 1, nbP2Token]
-          : column === 2
-            ? [nbP1Token, nbP2Token + 1]
-            : [nbP1Token, nbP2Token],
-      [0, 0],
-    );
+  return result;
 }
 
 /**
  * @throws SyntaxError if the board contains flying tokens
  */
 function checkForProhibitedFlyingTokens(boardState: BoardState) {
+  // Transpose the game board, allowing computing using colums instead lines
   const transposedState = transpose(boardState);
+
   // check for no flying token
   const hasFlyingTokenError = transposedState.reduce(
     (hasColumnError, column) => {
@@ -131,6 +137,20 @@ function checkForProhibitedFlyingTokens(boardState: BoardState) {
   if (hasFlyingTokenError) {
     throw new SyntaxError("Given game state text contains missplaced token(s)");
   }
+}
+
+export function countNbTokens(boardState: BoardState): [number, number] {
+  return boardState
+    .flat(2)
+    .reduce(
+      ([nbP1Token, nbP2Token], column) =>
+        column === 1
+          ? [nbP1Token + 1, nbP2Token]
+          : column === 2
+            ? [nbP1Token, nbP2Token + 1]
+            : [nbP1Token, nbP2Token],
+      [0, 0],
+    );
 }
 
 /**
@@ -156,7 +176,6 @@ export function checkBoardStateConsistency(boardState: BoardState): void {
   checkForWrongNumberOfTokens(boardState);
 }
 
-// Used to transpose the game board, allowing computing using colums instead lines
 function transpose(matrix: Array<Array<number>>) {
   return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
 }
@@ -180,20 +199,29 @@ export function promptRead(rl: readline.Interface, gameState: GameState) {
   rl.question(
     boardLayout.PROMPT.replace(
       boardLayout.PLACEHOLDER,
-      getPlayerToken(PlayerNum.p1),
+      getPlayerTokenChar(PlayerNum.p1),
     ),
     (answer) => {
       const numAnswer = Number(answer);
+
       switch (true) {
+        // wrong answer cases
         case isNaN(numAnswer) ||
           numAnswer <= 0 ||
           numAnswer > boardLayout.NB_COLUMN:
           console.log(boardLayout.ERROR_INVALID_ANSWER);
           promptRead(rl, gameState);
           break;
+
+        // playToken
         case numAnswer > 0 && numAnswer < 8:
           try {
-            playToken(gameState.boardState, numAnswer, PlayerNum.p1);
+            gameState.boardState = playToken(
+              gameState.boardState,
+              numAnswer,
+              PlayerNum.p1,
+            );
+            promptRead(rl, gameState);
           } catch (e) {
             console.log(
               boardLayout.ERROR_COLUMN_FULL.replace(
@@ -204,6 +232,7 @@ export function promptRead(rl: readline.Interface, gameState: GameState) {
             promptRead(rl, gameState);
             break;
           }
+
           printBoardStateToConsole(boardStateToString(gameState));
           rl.close();
       }
@@ -211,7 +240,7 @@ export function promptRead(rl: readline.Interface, gameState: GameState) {
   );
 }
 
-export function prompt(gameState: GameState) {
+export function initPrompt(gameState: GameState) {
   const rl: readline.Interface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -222,5 +251,5 @@ export function prompt(gameState: GameState) {
 export function runConnect4(stateConfigFile: BoardState) {
   const gameState = initBoardState(stateConfigFile);
   printBoardStateToConsole(boardStateToString(gameState));
-  prompt(gameState);
+  initPrompt(gameState);
 }
