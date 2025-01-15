@@ -1,4 +1,4 @@
-# Connect Four
+## Connect Four
 
 A CLI program to play the game Connect Four.
 
@@ -10,7 +10,7 @@ npm i
 
 ## Run
 
-To run a game, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it')
+To run a game, you need to provide a json file to load an initial state of the game board.
 
 ```bash
 npm run dev ./src/testConfig.json
@@ -29,19 +29,19 @@ docker build -t ts-cli-app .
 docker run ts-cli-app
 ```
 
-# How to use it
+## How to use it
 
-## 1. Create the json file that represents the state of the board.
+1. Create the json file that represents the state of the board.
 
 Based on this model:
 
-[  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
+[
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
 ]
 
 It's a representation of the game grid: each 0 represents an empty space. To place a token, you have to replace the 0 character:
@@ -51,48 +51,50 @@ It's a representation of the game grid: each 0 represents an empty space. To pla
 - 2 for a player 2 token
 
 For example, if player 1 placed a token in the third column :
-
-[  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 1, 0, 0, 0, 0],  
-]  
+[
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 1, 0, 0, 0, 0],
+]
 ... and if player 2 places a token in the same column :
+[
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0],
+[0, 0, 2, 0, 0, 0, 0],
+[0, 0, 1, 0, 0, 0, 0],
+]
 
-[  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 0, 0, 0, 0, 0],  
-  [0, 0, 2, 0, 0, 0, 0],  
-  [0, 0, 1, 0, 0, 0, 0],  
-]  
 ... and so on.
 
-## 2. Respect the 2 rules for building the game grid.
+2. Respect the 2 rules for building the game grid.
 
-### you're not able to place a "flying token".
+- you're not able to place a "flying token" like this :
+  [
+  [0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 2, 0, 0, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0],
+  ]
+  => tokens must fall to the bottom of the column.
 
-Like this wrong exemple:
+- You must respect the correct number of tokens for each player: they must have the same number of tokens +/-1 (depending on who have played first).
 
-[  
-   [0, 0, 0, 0, 0, 0, 0],  
-   [0, 0, 1, 0, 0, 0, 0],  
-   [0, 0, 0, 0, 0, 0, 0],  
-   [0, 0, 0, 0, 0, 0, 0],  
-   [0, 0, 2, 0, 0, 0, 0],  
-   [0, 0, 1, 0, 0, 0, 0],  
- ]  
- => tokens must fall to the bottom of the column.
+3. Save the file
+   Save the game grid where you want, in the format shown above, in a text (json) file.
+   Ex: `myGameGrid.json`
 
-### You must respect the correct number of tokens for each player.
+4. Run the game
 
-Each player must have the same number of tokens +/-1 (depending on who have played first).
+Run the game first with this command in a term (please put the correct path for your file):
+`npm run dev ./src/myGameGrid.json`
 
-## 3. Save the file
+## Place a token
 
-Save the game grid where you want, in the format shown above, in a text (json) file.
-Ex: `myGameGrid.json`
+First run the game, then you will be able to play into a column by entering its number (1-7). This will update the game representation accordingly.
