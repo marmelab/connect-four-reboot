@@ -6,7 +6,7 @@ export enum boardLayout {
   BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
   INFORMATIONS = "\n-- You are player: " + PLACEHOLDER + " --",
   PROMPT = "Please enter the column number you want to play your token $ [1-7]: ",
-  ERROR_INVALID_ANSWER = "Invalid column number.\n",
+  ERROR_INVALID_COLUMN_NUMBER = "Invalid column number.\n",
   ERROR_COLUMN_FULL = "Cannot add token into column $ which is full.\n",
   SEPARATOR = "|",
   PLAYER_ONE_TOKEN = "o",
@@ -25,8 +25,7 @@ export type BoardState = Array<Array<PlayerNum>>;
 
 export interface GameState {
   boardState: BoardState;
-  p1Num: PlayerNum;
-  p2Num: PlayerNum;
+  currentPlayer: PlayerNum;
 }
 
 export function getPlayerTokenChar(playerNum: PlayerNum) {
@@ -139,18 +138,23 @@ function checkForProhibitedFlyingTokens(boardState: BoardState) {
   }
 }
 
-export function countNbTokens(boardState: BoardState): [number, number] {
-  return boardState
-    .flat(2)
-    .reduce(
-      ([nbP1Token, nbP2Token], column) =>
-        column === 1
-          ? [nbP1Token + 1, nbP2Token]
-          : column === 2
-            ? [nbP1Token, nbP2Token + 1]
-            : [nbP1Token, nbP2Token],
-      [0, 0],
-    );
+export function countNbTokens(
+  boardState: BoardState,
+): [number, number, number] {
+  const flatSortedBoardState: Array<PlayerNum> = boardState.flat(2).sort();
+
+  const emptyCount = flatSortedBoardState.findIndex(
+    (elem) => elem === PlayerNum.p1,
+  );
+  const p1Count =
+    flatSortedBoardState.findIndex((elem) => elem === PlayerNum.p2) -
+    emptyCount;
+
+  return [
+    emptyCount,
+    p1Count,
+    flatSortedBoardState.length - (emptyCount + p1Count),
+  ];
 }
 
 /**
@@ -159,8 +163,8 @@ export function countNbTokens(boardState: BoardState): [number, number] {
  *  Each player has the same number +-1.
  */
 function checkForWrongNumberOfTokens(boardState: BoardState) {
-  const nbTokens: [number, number] = countNbTokens(boardState);
-  const hasNbTokensError = Math.abs(nbTokens[0] - nbTokens[1]) > 1;
+  const nbTokens: [number, number, number] = countNbTokens(boardState);
+  const hasNbTokensError = Math.abs(nbTokens[1] - nbTokens[2]) > 1;
   if (hasNbTokensError) {
     throw new SyntaxError(
       "Given game state text contains wrong number of token(s)",
@@ -180,22 +184,7 @@ function transpose(matrix: Array<Array<number>>) {
   return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
 }
 
-export function initBoardState(stateConfigFile: BoardState): GameState {
-  const result = {
-    boardState: stateConfigFile,
-    playedMoves: [],
-    currentBoardState: stateConfigFile,
-    p1Num: 1,
-    p2Num: 2,
-  };
-  const nbTokens: [number, number] = countNbTokens(result.boardState);
-  result.p1Num = nbTokens[0] > nbTokens[1] ? PlayerNum.p2 : PlayerNum.p1;
-  result.p2Num = result.p1Num === PlayerNum.p1 ? PlayerNum.p2 : PlayerNum.p1;
-  checkBoardStateConsistency(result.boardState);
-  return result;
-}
-
-export function promptRead(rl: readline.Interface, gameState: GameState) {
+export function readNextPlay(rl: readline.Interface, gameState: GameState) {
   rl.question(
     boardLayout.PROMPT.replace(
       boardLayout.PLACEHOLDER,
@@ -205,23 +194,20 @@ export function promptRead(rl: readline.Interface, gameState: GameState) {
       const numAnswer = Number(answer);
 
       switch (true) {
-        // wrong answer cases
         case isNaN(numAnswer) ||
           numAnswer <= 0 ||
           numAnswer > boardLayout.NB_COLUMN:
-          console.log(boardLayout.ERROR_INVALID_ANSWER);
-          promptRead(rl, gameState);
+          console.error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
+          readNextPlay(rl, gameState);
           break;
 
-        // playToken
-        case numAnswer > 0 && numAnswer < 8:
+        case numAnswer > 0 && numAnswer < boardLayout.NB_COLUMN:
           try {
             gameState.boardState = playToken(
               gameState.boardState,
               numAnswer,
               PlayerNum.p1,
             );
-            promptRead(rl, gameState);
           } catch (e) {
             console.log(
               boardLayout.ERROR_COLUMN_FULL.replace(
@@ -229,12 +215,12 @@ export function promptRead(rl: readline.Interface, gameState: GameState) {
                 `${numAnswer}`,
               ),
             );
-            promptRead(rl, gameState);
+            readNextPlay(rl, gameState);
             break;
           }
 
-          printBoardStateToConsole(boardStateToString(gameState));
           rl.close();
+          printBoardStateToConsole(boardStateToString(gameState));
       }
     },
   );
@@ -245,11 +231,18 @@ export function initPrompt(gameState: GameState) {
     input: process.stdin,
     output: process.stdout,
   });
-  promptRead(rl, gameState);
+  readNextPlay(rl, gameState);
 }
 
 export function runConnect4(stateConfigFile: BoardState) {
-  const gameState = initBoardState(stateConfigFile);
+  const gameState: GameState = {
+    boardState: stateConfigFile,
+    currentPlayer: PlayerNum.empty,
+  };
+  const count: [number, number, number] = countNbTokens(gameState.boardState);
+  gameState.currentPlayer = count[1] > count[2] ? PlayerNum.p1 : PlayerNum.p2;
+
+  checkBoardStateConsistency(gameState.boardState);
   printBoardStateToConsole(boardStateToString(gameState));
   initPrompt(gameState);
 }
