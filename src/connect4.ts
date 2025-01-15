@@ -78,8 +78,10 @@ export function playToken(
   column: number,
   pNum: number,
 ): BoardState {
-  const tBoardState = transpose(boardState);
-  const index: number = tBoardState[column - 1].findIndex((elem) => elem > 0);
+  const res = structuredClone(boardState);
+
+  const transposedRes = transpose(res);
+  const index: number = transposedRes[column - 1].findIndex((elem) => elem > 0);
   if (index === 0) {
     throw new Error(
       boardLayout.ERROR_COLUMN_FULL.replace(
@@ -88,9 +90,9 @@ export function playToken(
       ),
     );
   }
+  res[(index > -1 ? index : boardLayout.NB_ROWS) - 1][column - 1] = pNum;
 
-  boardState[(index > -1 ? index : boardLayout.NB_ROWS) - 1][column - 1] = pNum;
-  return { ...boardState };
+  return res;
 }
 
 export function countNbTokens(boardState: BoardState): [number, number] {
