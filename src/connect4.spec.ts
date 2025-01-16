@@ -26,7 +26,11 @@ test("countNbToken", () => {
     [0, 2, 2, 1, 1, 2, 2],
   ];
 
-  expect(countNbTokens(boardState)).toEqual([20, 11, 11]);
+  expect(countNbTokens(boardState)).toEqual({
+    emptyCount: 20,
+    p1Count: 11,
+    p2Count: 11,
+  });
 });
 
 describe("When a board state contains 'flying tokens', it", () => {

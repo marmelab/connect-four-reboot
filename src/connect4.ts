@@ -1,5 +1,10 @@
 import { messages, PLACEHOLDER } from "./config/messages.js";
-import { BoardState, GameState, PlayerNum } from "./types/gameState.js";
+import {
+  BoardState,
+  CountNbTokens,
+  GameState,
+  PlayerNum,
+} from "./types/gameState.js";
 import {
   boardLayout,
   boardStateToString,
@@ -12,7 +17,7 @@ import { transpose } from "./tools.js";
  * @throws Error if the played column is already full
  */
 export function playToken(gameState: GameState, column: number): GameState {
-  if (column < 0 || column > boardLayout.NB_COLUMN) {
+  if (column <= 0 || column > boardLayout.NB_COLUMN) {
     throw new Error(messages.ERROR_INVALID_COLUMN_NUMBER);
   }
   const result = structuredClone(gameState);
@@ -69,9 +74,7 @@ function checkForProhibitedFlyingTokens(boardState: BoardState) {
   }
 }
 
-export function countNbTokens(
-  boardState: BoardState,
-): [number, number, number] {
+export function countNbTokens(boardState: BoardState): CountNbTokens {
   const flatSortedBoardState: Array<PlayerNum> = boardState.flat(2).sort();
 
   const emptyCount = flatSortedBoardState.findIndex(
@@ -81,11 +84,11 @@ export function countNbTokens(
     flatSortedBoardState.findIndex((elem) => elem === PlayerNum.p2) -
     emptyCount;
 
-  return [
-    emptyCount,
-    p1Count,
-    flatSortedBoardState.length - (emptyCount + p1Count),
-  ];
+  return {
+    emptyCount: emptyCount,
+    p1Count: p1Count,
+    p2Count: flatSortedBoardState.length - (emptyCount + p1Count),
+  };
 }
 
 /**
@@ -94,8 +97,8 @@ export function countNbTokens(
  *  Each player has the same number +-1.
  */
 function checkForWrongNumberOfTokens(boardState: BoardState) {
-  const nbTokens: [number, number, number] = countNbTokens(boardState);
-  const hasNbTokensError = Math.abs(nbTokens[1] - nbTokens[2]) > 1;
+  const nbTokens: CountNbTokens = countNbTokens(boardState);
+  const hasNbTokensError = Math.abs(nbTokens.p1Count - nbTokens.p2Count) > 1;
   if (hasNbTokensError) {
     throw new SyntaxError(
       "Given game state text contains wrong number of token(s)",
@@ -119,8 +122,9 @@ export function initGameState(stateConfigFile: BoardState): GameState {
     boardState: stateConfigFile,
     currentPlayer: PlayerNum.empty,
   };
-  const count: [number, number, number] = countNbTokens(gameState.boardState);
-  gameState.currentPlayer = count[1] > count[2] ? PlayerNum.p1 : PlayerNum.p2;
+  const count: CountNbTokens = countNbTokens(gameState.boardState);
+  gameState.currentPlayer =
+    count.p1Count > count.p2Count ? PlayerNum.p1 : PlayerNum.p2;
   checkBoardStateConsistency(gameState.boardState);
   return gameState;
 }
@@ -131,7 +135,7 @@ export async function runConnect4(stateConfigFile: BoardState) {
   printBoardStateToConsole(boardStateToString(gameState));
   let validMove = false;
   while (true) {
-    const columnToPlay = await readNextPlay(gameState);
+    const columnToPlay = await readNextPlay();
     try {
       gameState = playToken(gameState, columnToPlay);
       validMove = true;

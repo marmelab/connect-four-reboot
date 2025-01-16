@@ -38,13 +38,7 @@ export function boardStateToString(gameState: GameState): String {
   gameState.boardState.forEach((line: Array<number>) => {
     line.forEach((token: number) => {
       resultDisplay.push(
-        `${boardLayout.SEPARATOR} ${
-          token === 1
-            ? boardLayout.PLAYER_ONE_TOKEN
-            : token === 2
-              ? boardLayout.PLAYER_TWO_TOKEN
-              : boardLayout.EMPTY_TOKEN
-        } `,
+        `${boardLayout.SEPARATOR} ${getPlayerTokenChar(token)} `,
       );
     });
     resultDisplay.push(`${boardLayout.SEPARATOR}\n`);
