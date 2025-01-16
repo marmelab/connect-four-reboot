@@ -10,7 +10,7 @@ import {
   boardStateToString,
   printBoardStateToConsole,
 } from "./layout/cliLayout.js";
-import { readNextPlay } from "./prompt.js";
+import { closePrompt, readForNextRound, readNextPlay } from "./prompt.js";
 import { transpose } from "./tools.js";
 
 /**
@@ -44,6 +44,8 @@ export function playToken(gameState: GameState, column: number): GameState {
   result.boardState[newTokenIndex][column - 1] = result.currentPlayer;
   result.currentPlayer =
     result.currentPlayer === PlayerNum.p1 ? PlayerNum.p2 : PlayerNum.p1;
+
+  result.winner = getWinner(result.boardState);
 
   return result;
 }
@@ -121,6 +123,7 @@ export function initGameState(stateConfigFile: BoardState): GameState {
   const gameState: GameState = {
     boardState: stateConfigFile,
     currentPlayer: PlayerNum.empty,
+    winner: PlayerNum.empty,
   };
   const count: CountNbTokens = countNbTokens(gameState.boardState);
   gameState.currentPlayer =
@@ -134,7 +137,7 @@ export async function runConnect4(stateConfigFile: BoardState) {
 
   printBoardStateToConsole(boardStateToString(gameState));
   let validMove = false;
-  while (true) {
+  while (gameState.winner === PlayerNum.empty) {
     const columnToPlay = await readNextPlay();
     try {
       gameState = playToken(gameState, columnToPlay);
@@ -145,6 +148,16 @@ export async function runConnect4(stateConfigFile: BoardState) {
         messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, `${columnToPlay}`),
       );
     }
+  }
+  menu(stateConfigFile);
+}
+
+export async function menu(stateConfigFile: BoardState) {
+  const answer = await readForNextRound();
+  if (answer) {
+    runConnect4(stateConfigFile);
+  } else {
+    closePrompt();
   }
 }
 

@@ -15,4 +15,5 @@ export type BoardState = Array<Array<PlayerNum>>;
 export interface GameState {
   boardState: BoardState;
   currentPlayer: PlayerNum;
+  winner: PlayerNum;
 }

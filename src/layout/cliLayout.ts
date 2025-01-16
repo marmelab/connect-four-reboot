@@ -47,12 +47,20 @@ export function boardStateToString(gameState: GameState): String {
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
   // Player information
-  resultDisplay.push(
-    `${messages.INFORMATIONS.replace(
-      PLACEHOLDER,
-      gameState.currentPlayer.toString(),
-    ).replace(PLACEHOLDER, getPlayerTokenChar(gameState.currentPlayer))}\n`,
-  );
-
+  if (gameState.winner !== PlayerNum.empty) {
+    resultDisplay.push(
+      `${messages.WINNER_MESSAGE.replace(
+        PLACEHOLDER,
+        gameState.currentPlayer.toString(),
+      ).replace(PLACEHOLDER, getPlayerTokenChar(gameState.currentPlayer))}\n`,
+    );
+  } else {
+    resultDisplay.push(
+      `${messages.INFORMATIONS.replace(
+        PLACEHOLDER,
+        gameState.currentPlayer.toString(),
+      ).replace(PLACEHOLDER, getPlayerTokenChar(gameState.currentPlayer))}\n`,
+    );
+  }
   return resultDisplay.join("");
 }
