@@ -30,6 +30,7 @@ test("Got a layouted board using 'boardStateToString'", () => {
       [0, 2, 2, 1, 1, 2, 2],
     ],
     currentPlayer: PlayerNum.p1,
+    winner: PlayerNum.empty,
   };
   const boardDisplay = `
 +---+---+---+---+---+---+---+
@@ -46,13 +47,4 @@ test("Got a layouted board using 'boardStateToString'", () => {
 `;
 
   expect(boardStateToString(correctGameState)).toBe(boardDisplay);
-});
-
-test("Displaying the board using 'printBoardStateToConsole'", () => {
-  const consoleSpy = vi.spyOn(console, "log");
-  const testingString: string = "Test console display";
-
-  printBoardStateToConsole(testingString);
-
-  expect(consoleSpy).toHaveBeenCalledWith(testingString);
 });

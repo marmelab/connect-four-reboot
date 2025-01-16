@@ -7,16 +7,11 @@ import {
   getWinner,
   isFull,
 } from "./connect4";
-import { GameState, PlayerNum } from "./types/gameState";
+import { BoardState, GameState, PlayerNum } from "./types/gameState";
 import {
   printBoardStateToConsole,
   boardStateToString,
 } from "./layout/cliLayout";
-
-interface TestingGameState extends GameState {
-  boardDisplay?: string;
-  boardDisplayAfterFirstMove?: string;
-}
 
 test("countNbToken", () => {
   const boardState = [
@@ -37,72 +32,60 @@ test("countNbToken", () => {
 
 describe("When a board state contains 'flying tokens', it", () => {
   test("throws an error (at position [0,0])", () => {
-    const flyingTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [1, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const flyingTokenIncorrectBoardState1: BoardState = [
+      [1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(flyingTokenIncorrectGameState1.boardState),
+      checkBoardStateConsistency(flyingTokenIncorrectBoardState1),
     ).toThrowError("Given game state text contains missplaced token(s)");
   });
 
   test("throws an error (in the middle of the board game)", () => {
-    const flyingTokenIncorrectGameState2: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 1, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const flyingTokenIncorrectBoardState2: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 1, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(flyingTokenIncorrectGameState2.boardState),
+      checkBoardStateConsistency(flyingTokenIncorrectBoardState2),
     ).toThrowError("Given game state text contains missplaced token(s)");
   });
 });
 
 describe("When a board state contains a wrong number of token, it", () => {
   test("throws an error for p1", () => {
-    const nbTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [1, 1, 1, 2, 1, 1, 1],
-        [1, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const nbTokenIncorrectBoardState1: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [1, 1, 1, 2, 1, 1, 1],
+      [1, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(nbTokenIncorrectGameState1.boardState),
+      checkBoardStateConsistency(nbTokenIncorrectBoardState1),
     ).toThrowError("Given game state text contains wrong number of token(s)");
   });
 
   test("throws an error for p2", () => {
-    const nbTokenIncorrectGameState2: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 2, 0],
-        [0, 2, 1, 1, 2, 2, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const nbTokenIncorrectBoardState2: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 2, 0],
+      [0, 2, 1, 1, 2, 2, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(nbTokenIncorrectGameState2.boardState),
+      checkBoardStateConsistency(nbTokenIncorrectBoardState2),
     ).toThrowError("Given game state text contains wrong number of token(s)");
   });
 });
@@ -110,16 +93,15 @@ describe("When a board state contains a wrong number of token, it", () => {
 describe("Entry point 'initGameState'", () => {
   test("displays a game board with correct game state", () => {
     const consoleSpy = vi.spyOn(console, "log");
-    const correctGameState: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      boardDisplay: `
+    const correctBoardState: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
+    const boardDisplay: string = `
 +---+---+---+---+---+---+---+
 |   |   |   |   | o |   |   |
 |   |   |   |   | x |   |   |
@@ -131,36 +113,31 @@ describe("Entry point 'initGameState'", () => {
   1   2   3   4   5   6   7  
 
 -- You are player 2: x --
-`,
-      currentPlayer: PlayerNum.p1,
-    };
+`;
 
     printBoardStateToConsole(
-      boardStateToString(initGameState(correctGameState.boardState)),
+      boardStateToString(initGameState(correctBoardState)),
     );
 
-    expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
+    expect(consoleSpy).toHaveBeenCalledWith(boardDisplay);
   });
 
   test("throws an error with incorrect game state", () => {
-    const flyingTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [1, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
-    expect(() =>
-      initGameState(flyingTokenIncorrectGameState1.boardState),
-    ).toThrowError("Given game state text contains missplaced token(s)");
+    const flyingTokenIncorrectBoardState1: BoardState = [
+      [1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
+    expect(() => initGameState(flyingTokenIncorrectBoardState1)).toThrowError(
+      "Given game state text contains missplaced token(s)",
+    );
   });
 
   describe("'playtoken' - When the player place a token ", () => {
-    const correctGameState: TestingGameState = {
+    const correctGameState: GameState = {
       boardState: [
         [0, 0, 0, 0, 1, 0, 0],
         [0, 0, 0, 0, 2, 0, 0],
@@ -169,7 +146,11 @@ describe("Entry point 'initGameState'", () => {
         [0, 1, 1, 2, 1, 1, 1],
         [0, 2, 2, 1, 1, 2, 2],
       ],
-      boardDisplayAfterFirstMove: `
+      currentPlayer: PlayerNum.p1,
+      winner: PlayerNum.empty,
+    };
+
+    const boardDisplayAfterFirstMove = `
 +---+---+---+---+---+---+---+
 |   |   |   |   | o |   |   |
 |   |   |   |   | x |   |   |
@@ -181,14 +162,10 @@ describe("Entry point 'initGameState'", () => {
   1   2   3   4   5   6   7  
 
 -- You are player 2: x --
-`,
-      currentPlayer: PlayerNum.p1,
-    };
+`;
     test("in a correct column, the game board's display refreshes with the new token", () => {
       const gameState = playToken(correctGameState, 1);
-      expect(boardStateToString(gameState)).toBe(
-        correctGameState.boardDisplayAfterFirstMove,
-      );
+      expect(boardStateToString(gameState)).toBe(boardDisplayAfterFirstMove);
     });
 
     test("in a full column, an error throws to indicate the problem to the user", () => {
