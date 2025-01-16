@@ -7,6 +7,7 @@ import {
   countNbTokens,
   GameState,
   getPlayerTokenChar,
+  initGameState,
   PlayerNum,
   playToken,
   printBoardStateToConsole,
@@ -182,7 +183,9 @@ describe("Entry point 'runConnect4'", () => {
       currentPlayer: PlayerNum.p1,
     };
 
-    runConnect4(correctGameState.boardState);
+    printBoardStateToConsole(
+      boardStateToString(initGameState(correctGameState.boardState)),
+    );
 
     expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
   });
@@ -200,7 +203,7 @@ describe("Entry point 'runConnect4'", () => {
       currentPlayer: PlayerNum.p1,
     };
     expect(() =>
-      runConnect4(flyingTokenIncorrectGameState1.boardState),
+      initGameState(flyingTokenIncorrectGameState1.boardState),
     ).toThrowError("Given game state text contains missplaced token(s)");
   });
 

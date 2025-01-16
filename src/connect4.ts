@@ -83,6 +83,9 @@ export function playToken(
   column: number,
   pNum: number,
 ): BoardState {
+  if (column < 0 || column >= boardLayout.NB_COLUMN) {
+    throw new Error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
+  }
   const result = structuredClone(boardState);
 
   // Transpose the game board, allowing computing using colums instead lines
@@ -184,65 +187,79 @@ function transpose(matrix: Array<Array<number>>) {
   return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
 }
 
-export function readNextPlay(rl: readline.Interface, gameState: GameState) {
-  rl.question(
-    boardLayout.PROMPT.replace(
-      boardLayout.PLACEHOLDER,
-      getPlayerTokenChar(PlayerNum.p1),
-    ),
-    (answer) => {
-      const numAnswer = Number(answer);
+const rl: readline.Interface = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-      switch (true) {
-        case isNaN(numAnswer) ||
-          numAnswer <= 0 ||
-          numAnswer > boardLayout.NB_COLUMN:
-          console.error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
-          readNextPlay(rl, gameState);
-          break;
-
-        case numAnswer > 0 && numAnswer < boardLayout.NB_COLUMN:
-          try {
-            gameState.boardState = playToken(
-              gameState.boardState,
-              numAnswer,
-              PlayerNum.p1,
-            );
-          } catch (e) {
-            console.log(
-              boardLayout.ERROR_COLUMN_FULL.replace(
-                boardLayout.PLACEHOLDER,
-                `${numAnswer}`,
-              ),
-            );
-            readNextPlay(rl, gameState);
-            break;
-          }
-
-          rl.close();
-          printBoardStateToConsole(boardStateToString(gameState));
-      }
-    },
-  );
-}
-
-export function initPrompt(gameState: GameState) {
-  const rl: readline.Interface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
+function question(text: string) {
+  return new Promise((resolve) => {
+    rl.question(text, resolve);
   });
-  readNextPlay(rl, gameState);
 }
 
-export function runConnect4(stateConfigFile: BoardState) {
+export async function readNextPlay(gameState: GameState): Promise<number> {
+  let isAnswerValid = false;
+  let numAnswer: number = -1;
+
+  while (!isAnswerValid) {
+    const answer = await question(
+      boardLayout.PROMPT.replace(
+        boardLayout.PLACEHOLDER,
+        getPlayerTokenChar(PlayerNum.p1),
+      ),
+    );
+    numAnswer = Number(answer);
+    if (
+      isNaN(numAnswer) ||
+      numAnswer <= 0 ||
+      numAnswer > boardLayout.NB_COLUMN
+    ) {
+      console.error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
+    } else {
+      isAnswerValid = true;
+    }
+  }
+  return numAnswer;
+}
+
+/**
+ * @throws SyntaxError if the board is invalid (checkBoardStateConsistency)
+ */
+export function initGameState(stateConfigFile: BoardState): GameState {
   const gameState: GameState = {
     boardState: stateConfigFile,
     currentPlayer: PlayerNum.empty,
   };
   const count: [number, number, number] = countNbTokens(gameState.boardState);
   gameState.currentPlayer = count[1] > count[2] ? PlayerNum.p1 : PlayerNum.p2;
-
   checkBoardStateConsistency(gameState.boardState);
+  return gameState;
+}
+
+export async function runConnect4(stateConfigFile: BoardState) {
+  const gameState = initGameState(stateConfigFile);
+
   printBoardStateToConsole(boardStateToString(gameState));
-  initPrompt(gameState);
+  let validMove = false;
+  while (!validMove) {
+    const columnToPlay = await readNextPlay(gameState);
+    try {
+      gameState.boardState = playToken(
+        gameState.boardState,
+        columnToPlay,
+        PlayerNum.p1,
+      );
+      validMove = true;
+    } catch (e) {
+      console.log(
+        boardLayout.ERROR_COLUMN_FULL.replace(
+          boardLayout.PLACEHOLDER,
+          `${columnToPlay}`,
+        ),
+      );
+    }
+  }
+  printBoardStateToConsole(boardStateToString(gameState));
+  rl.close();
 }
