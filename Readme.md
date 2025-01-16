@@ -50,7 +50,7 @@ It's a representation of the game grid: each 0 represents an empty space. To pla
 - 1 for a player 1 token
 - 2 for a player 2 token
 
-For example, if player 1 placed a token in the third column:
+For example, if player 1 placed a token in the third column :
 
 [  
   [0, 0, 0, 0, 0, 0, 0],  
@@ -60,7 +60,7 @@ For example, if player 1 placed a token in the third column:
   [0, 0, 0, 0, 0, 0, 0],  
   [0, 0, 1, 0, 0, 0, 0],  
 ]  
-... and if player 2 places a token in the same column:
+... and if player 2 places a token in the same column :
 
 [  
   [0, 0, 0, 0, 0, 0, 0],  
