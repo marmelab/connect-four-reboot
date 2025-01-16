@@ -29,7 +29,6 @@ docker build -t ts-cli-app .
 docker run ts-cli-app
 ```
 
-
 # How to use it
 
 ## 1. Create the json file that represents the state of the board.
@@ -51,7 +50,7 @@ It's a representation of the game grid: each 0 represents an empty space. To pla
 - 1 for a player 1 token
 - 2 for a player 2 token
 
-For example, if player 1 placed a token in the third column:
+For example, if player 1 placed a token in the third column :
 
 [  
   [0, 0, 0, 0, 0, 0, 0],  
@@ -61,7 +60,7 @@ For example, if player 1 placed a token in the third column:
   [0, 0, 0, 0, 0, 0, 0],  
   [0, 0, 1, 0, 0, 0, 0],  
 ]  
-... and if player 2 places a token in the same column:
+... and if player 2 places a token in the same column :
 
 [  
   [0, 0, 0, 0, 0, 0, 0],  
@@ -98,7 +97,21 @@ Each player must have the same number of tokens +/-1 (depending on who have play
 Save the game grid where you want, in the format shown above, in a text (json) file.
 Ex: `myGameGrid.json`
 
-## Place a token
+# Play a token 
+Once the game started, the board displayed, representing the provided json file :  
+![image](https://github.com/user-attachments/assets/65182e94-1e5d-412d-942e-1e1cc8a9ceb9)
 
-First run the game, then you will be able to play into a column by entering its number (1-7). This will update the game representation accordingly.
+
+Your token character is indicated here :  
+![image](https://github.com/user-attachments/assets/25fe91eb-c74f-4234-b151-1d8180b2f15c)
+
+To add a token you have to choose a column number according to the display :  
+![image](https://github.com/user-attachments/assets/a524a759-e02a-44d6-b4cc-ee9584309832)
+
+and 
+![image](https://github.com/user-attachments/assets/3a60862a-46ba-414d-abfd-8038e1bb1a12)
+
+then press enter 
+![image](https://github.com/user-attachments/assets/52a567ac-5714-4054-8881-9a7b8d639ba8)
+
 
