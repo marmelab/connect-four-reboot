@@ -167,16 +167,15 @@ export function getWinner(board: BoardState): PlayerNum {
           const newRow = row + step * y;
           const newCol = col + step * x;
           if (
-            newRow >= 0 &&
-            newRow < boardLayout.NB_ROWS &&
-            newCol >= 0 &&
-            newCol < boardLayout.NB_COLUMN &&
-            board[newRow][newCol] === token
+            newRow < 0 ||
+            newRow >= boardLayout.NB_ROWS ||
+            newCol < 0 ||
+            newCol >= boardLayout.NB_COLUMN ||
+            board[newRow][newCol] !== token
           ) {
-            count++;
-          } else {
             break;
           }
+          count++;
         }
         if (count === 4) return token;
       }
