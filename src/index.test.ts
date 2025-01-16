@@ -1,5 +1,4 @@
 import { describe, expect, test, vi } from "vitest";
-import { main } from "./index";
 import {
   boardLayout,
   boardStateToString,
@@ -52,7 +51,7 @@ test("Got a layouted board using 'boardStateToString'", () => {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 
--- You are player: o --
+-- You are player 1: o --
 `,
     currentPlayer: PlayerNum.p1,
   };
@@ -178,7 +177,7 @@ describe("Entry point 'runConnect4'", () => {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 
--- You are player: o --
+-- You are player 2: x --
 `,
       currentPlayer: PlayerNum.p1,
     };
@@ -228,25 +227,22 @@ describe("Entry point 'runConnect4'", () => {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 
--- You are player: o --
+-- You are player 2: x --
 `,
       currentPlayer: PlayerNum.p1,
     };
     test("in a correct column, the game board's display refreshes with the new token", () => {
-      const updatedBoardState = playToken(correctGameState.boardState, 1, 1);
-      expect(
-        boardStateToString({
-          boardState: updatedBoardState,
-          currentPlayer: PlayerNum.p1,
-        }),
-      ).toBe(correctGameState.boardDisplayAfterFirstMove);
+      const gameState = playToken(correctGameState, 1);
+      expect(boardStateToString(gameState)).toBe(
+        correctGameState.boardDisplayAfterFirstMove,
+      );
     });
 
     test("in a full column, an error throws to indicate the problem to the user", () => {
       const colNum: number = 5;
-      expect(() =>
-        playToken(correctGameState.boardState, colNum, 1),
-      ).toThrowError(`Cannot add token into column ${colNum} which is full.`);
+      expect(() => playToken(correctGameState, colNum)).toThrowError(
+        `Cannot add token into column ${colNum} which is full.`,
+      );
     });
   });
 });
