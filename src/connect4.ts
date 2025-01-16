@@ -1,96 +1,19 @@
-import * as readline from "readline";
-
-export enum boardLayout {
-  PLACEHOLDER = "$",
-  TOP = "+---+---+---+---+---+---+---+",
-  BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
-  INFORMATIONS = "\n-- You are player " +
-    PLACEHOLDER +
-    ": " +
-    PLACEHOLDER +
-    " --",
-  PROMPT = "Please enter the column number you want to play your token $ [1-7]: ",
-  ERROR_INVALID_COLUMN_NUMBER = "Invalid column number.\n",
-  ERROR_COLUMN_FULL = "Cannot add token into column $ which is full.\n",
-  SEPARATOR = "|",
-  PLAYER_ONE_TOKEN = "o",
-  PLAYER_TWO_TOKEN = "x",
-  EMPTY_TOKEN = " ",
-  NB_ROWS = 6,
-  NB_COLUMN = 7,
-}
-
-export enum PlayerNum {
-  p1 = 1,
-  p2 = 2,
-  empty = 0,
-}
-export type BoardState = Array<Array<PlayerNum>>;
-
-export interface GameState {
-  boardState: BoardState;
-  currentPlayer: PlayerNum;
-}
-
-export function getPlayerTokenChar(playerNum: PlayerNum) {
-  switch (playerNum) {
-    case PlayerNum.p1:
-      return boardLayout.PLAYER_ONE_TOKEN;
-    case PlayerNum.p2:
-      return boardLayout.PLAYER_TWO_TOKEN;
-    case PlayerNum.empty:
-      return boardLayout.EMPTY_TOKEN;
-  }
-}
-
-export function printBoardStateToConsole(boardState: String): void {
-  console.clear();
-  console.log(boardState);
-}
-
-export function boardStateToString(gameState: GameState): String {
-  const resultDisplay: Array<String> = [];
-
-  resultDisplay.push(`\n${boardLayout.TOP}\n`);
-
-  gameState.boardState.forEach((line: Array<number>) => {
-    line.forEach((token: number) => {
-      resultDisplay.push(
-        `${boardLayout.SEPARATOR} ${
-          token === 1
-            ? boardLayout.PLAYER_ONE_TOKEN
-            : token === 2
-              ? boardLayout.PLAYER_TWO_TOKEN
-              : boardLayout.EMPTY_TOKEN
-        } `,
-      );
-    });
-    resultDisplay.push(`${boardLayout.SEPARATOR}\n`);
-  });
-
-  resultDisplay.push(`${boardLayout.BOTTOM}\n`);
-
-  // Player information
-  const p1Token = getPlayerTokenChar(PlayerNum.p1);
-  resultDisplay.push(
-    `${boardLayout.INFORMATIONS.replace(
-      boardLayout.PLACEHOLDER,
-      gameState.currentPlayer.toString(),
-    ).replace(
-      boardLayout.PLACEHOLDER,
-      getPlayerTokenChar(gameState.currentPlayer),
-    )}\n`,
-  );
-
-  return resultDisplay.join("");
-}
+import { messages, PLACEHOLDER } from "./config/messages.js";
+import { BoardState, GameState, PlayerNum } from "./types/gameState.js";
+import {
+  boardLayout,
+  boardStateToString,
+  printBoardStateToConsole,
+} from "./layout/cliLayout.js";
+import { readNextPlay } from "./prompt.js";
+import { transpose } from "./tools.js";
 
 /**
  * @throws Error if the played column is already full
  */
 export function playToken(gameState: GameState, column: number): GameState {
   if (column < 0 || column >= boardLayout.NB_COLUMN) {
-    throw new Error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
+    throw new Error(messages.ERROR_INVALID_COLUMN_NUMBER);
   }
   const result = structuredClone(gameState);
 
@@ -106,10 +29,7 @@ export function playToken(gameState: GameState, column: number): GameState {
   // highestTokenIndex = 0 => the column is full
   if (highestTokenIndex === 0) {
     throw new Error(
-      boardLayout.ERROR_COLUMN_FULL.replace(
-        boardLayout.PLACEHOLDER,
-        "" + column,
-      ),
+      messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, "" + column),
     );
   }
   // highestTokenIndex = -1 => the column is empty
@@ -191,46 +111,6 @@ export function checkBoardStateConsistency(boardState: BoardState): void {
   checkForWrongNumberOfTokens(boardState);
 }
 
-function transpose(matrix: Array<Array<number>>) {
-  return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
-}
-
-const rl: readline.Interface = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-function question(text: string) {
-  return new Promise((resolve) => {
-    rl.question(text, resolve);
-  });
-}
-
-export async function readNextPlay(gameState: GameState): Promise<number> {
-  let isAnswerValid = false;
-  let numAnswer: number = -1;
-
-  while (!isAnswerValid) {
-    const answer = await question(
-      boardLayout.PROMPT.replace(
-        boardLayout.PLACEHOLDER,
-        getPlayerTokenChar(PlayerNum.p1),
-      ),
-    );
-    numAnswer = Number(answer);
-    if (
-      isNaN(numAnswer) ||
-      numAnswer <= 0 ||
-      numAnswer > boardLayout.NB_COLUMN
-    ) {
-      console.error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
-    } else {
-      isAnswerValid = true;
-    }
-  }
-  return numAnswer;
-}
-
 /**
  * @throws SyntaxError if the board is invalid (checkBoardStateConsistency)
  */
@@ -258,12 +138,8 @@ export async function runConnect4(stateConfigFile: BoardState) {
       printBoardStateToConsole(boardStateToString(gameState));
     } catch (e) {
       console.log(
-        boardLayout.ERROR_COLUMN_FULL.replace(
-          boardLayout.PLACEHOLDER,
-          `${columnToPlay}`,
-        ),
+        messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, `${columnToPlay}`),
       );
     }
   }
-  rl.close();
 }
