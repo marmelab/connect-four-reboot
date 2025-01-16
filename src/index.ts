@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 import fs from "fs";
-import { closeReadline, runConnect4 } from "./connect4.js";
+import { runConnect4 } from "./connect4.js";
 
 export async function main() {
   try {
