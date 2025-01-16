@@ -149,70 +149,36 @@ export async function runConnect4(stateConfigFile: BoardState) {
 }
 
 export function getWinner(board: BoardState): PlayerNum {
-  // detect horizontal win
-  for (let i = 0; i < boardLayout.NB_ROWS; i++) {
-    for (let j = 0; j < boardLayout.NB_COLUMN - 3; j++) {
-      const token = board[i][j];
-      if (token === 0) {
-        continue;
-      }
-      if (
-        token === board[i][j + 1] &&
-        token === board[i][j + 2] &&
-        token === board[i][j + 3]
-      ) {
-        return token;
-      }
-    }
-  }
+  const directions = [
+    { x: 1, y: 0 }, // horizontal
+    { x: 0, y: 1 }, // vertical
+    { x: 1, y: 1 }, // diagonal down-right
+    { x: 1, y: -1 }, // diagonal up-right
+  ];
 
-  // detect vertical win
-  for (let i = 0; i < boardLayout.NB_ROWS - 3; i++) {
-    for (let j = 0; j < boardLayout.NB_COLUMN; j++) {
-      const token = board[i][j];
-      if (token === 0) {
-        continue;
-      }
-      if (
-        token === board[i + 1][j] &&
-        token === board[i + 2][j] &&
-        token === board[i + 3][j]
-      ) {
-        return token;
-      }
-    }
-  }
+  for (let row = 0; row < boardLayout.NB_ROWS; row++) {
+    for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
+      const token = board[row][col];
+      if (token === PlayerNum.empty) continue;
 
-  // detect diagonal win in one direction
-  for (let i = 0; i < boardLayout.NB_ROWS - 3; i++) {
-    for (let j = 0; j < boardLayout.NB_COLUMN - 3; j++) {
-      const token = board[i][j];
-      if (token === 0) {
-        continue;
-      }
-      if (
-        token === board[i + 1][j + 1] &&
-        token === board[i + 2][j + 2] &&
-        token === board[i + 3][j + 3]
-      ) {
-        return token;
-      }
-    }
-  }
-
-  // detect diagonal win in the other direction
-  for (let i = 0; i < boardLayout.NB_ROWS - 3; i++) {
-    for (let j = 3; j < boardLayout.NB_COLUMN; j++) {
-      const token = board[i][j];
-      if (token === 0) {
-        continue;
-      }
-      if (
-        token === board[i + 1][j - 1] &&
-        token === board[i + 2][j - 2] &&
-        token === board[i + 3][j - 3]
-      ) {
-        return token;
+      for (const { x, y } of directions) {
+        let count = 1;
+        for (let step = 1; step < 4; step++) {
+          const newRow = row + step * y;
+          const newCol = col + step * x;
+          if (
+            newRow >= 0 &&
+            newRow < boardLayout.NB_ROWS &&
+            newCol >= 0 &&
+            newCol < boardLayout.NB_COLUMN &&
+            board[newRow][newCol] === token
+          ) {
+            count++;
+          } else {
+            break;
+          }
+        }
+        if (count === 4) return token;
       }
     }
   }
