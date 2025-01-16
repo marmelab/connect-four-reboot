@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getWinner } from "./connect4";
+import { getWinner, isFull } from "./connect4";
 
 describe("getWinner", () => {
   const emptyBoard = [
@@ -133,4 +133,43 @@ describe("getWinner", () => {
       expect(getWinner(board)).toBe(expectedWinner);
     },
   );
+});
+
+describe("isFull", () => {
+  it("should return false for an empty board", () => {
+    expect(
+      isFull([
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ]),
+    ).toBe(false);
+  });
+  it("should return false for an ongoing board", () => {
+    expect(
+      isFull([
+        [0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 2, 0, 0],
+        [0, 2, 1, 0, 2, 0, 0],
+        [0, 2, 1, 1, 2, 0, 2],
+        [0, 1, 1, 2, 1, 1, 1],
+        [0, 2, 2, 1, 1, 2, 2],
+      ]),
+    ).toBe(false);
+  });
+  it("should return true for a full board", () => {
+    expect(
+      isFull([
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+      ]),
+    ).toBe(true);
+  });
 });
