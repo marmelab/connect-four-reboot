@@ -1,7 +1,7 @@
 import * as readline from "readline";
-import { messages, PLACEHOLDER } from "./config/messages";
-import { getPlayerTokenChar, boardLayout } from "./layout/cliLayout";
-import { GameState, PlayerNum } from "./types/gameState";
+import { messages, PLACEHOLDER } from "./config/messages.js";
+import { getPlayerTokenChar, boardLayout } from "./layout/cliLayout.js";
+import { GameState, PlayerNum } from "./types/gameState.js";
 const rl: readline.Interface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
