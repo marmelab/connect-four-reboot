@@ -12,7 +12,7 @@ import { transpose } from "./tools.js";
  * @throws Error if the played column is already full
  */
 export function playToken(gameState: GameState, column: number): GameState {
-  if (column < 0 || column >= boardLayout.NB_COLUMN) {
+  if (column < 0 || column > boardLayout.NB_COLUMN) {
     throw new Error(messages.ERROR_INVALID_COLUMN_NUMBER);
   }
   const result = structuredClone(gameState);
