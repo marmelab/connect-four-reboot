@@ -4,7 +4,11 @@ export enum boardLayout {
   PLACEHOLDER = "$",
   TOP = "+---+---+---+---+---+---+---+",
   BOTTOM = "+---+---+---+---+---+---+---+\n  1   2   3   4   5   6   7  ",
-  INFORMATIONS = "\n-- You are player: " + PLACEHOLDER + " --",
+  INFORMATIONS = "\n-- You are player " +
+    PLACEHOLDER +
+    ": " +
+    PLACEHOLDER +
+    " --",
   PROMPT = "Please enter the column number you want to play your token $ [1-7]: ",
   ERROR_INVALID_COLUMN_NUMBER = "Invalid column number.\n",
   ERROR_COLUMN_FULL = "Cannot add token into column $ which is full.\n",
@@ -69,7 +73,13 @@ export function boardStateToString(gameState: GameState): String {
   // Player information
   const p1Token = getPlayerTokenChar(PlayerNum.p1);
   resultDisplay.push(
-    `${boardLayout.INFORMATIONS.replace(boardLayout.PLACEHOLDER, p1Token)}\n`,
+    `${boardLayout.INFORMATIONS.replace(
+      boardLayout.PLACEHOLDER,
+      gameState.currentPlayer.toString(),
+    ).replace(
+      boardLayout.PLACEHOLDER,
+      getPlayerTokenChar(gameState.currentPlayer),
+    )}\n`,
   );
 
   return resultDisplay.join("");
@@ -78,18 +88,14 @@ export function boardStateToString(gameState: GameState): String {
 /**
  * @throws Error if the played column is already full
  */
-export function playToken(
-  boardState: BoardState,
-  column: number,
-  pNum: number,
-): BoardState {
+export function playToken(gameState: GameState, column: number): GameState {
   if (column < 0 || column >= boardLayout.NB_COLUMN) {
     throw new Error(boardLayout.ERROR_INVALID_COLUMN_NUMBER);
   }
-  const result = structuredClone(boardState);
+  const result = structuredClone(gameState);
 
   // Transpose the game board, allowing computing using colums instead lines
-  const transposedBoardState = transpose(result);
+  const transposedBoardState = transpose(result.boardState);
 
   // highest token's index=0 ; lowest token's index = boardLayout.NB_ROWS - 1
   // Got the highest token's index
@@ -110,7 +116,9 @@ export function playToken(
   const newTokenIndex =
     (highestTokenIndex > -1 ? highestTokenIndex : boardLayout.NB_ROWS) - 1;
 
-  result[newTokenIndex][column - 1] = pNum;
+  result.boardState[newTokenIndex][column - 1] = result.currentPlayer;
+  result.currentPlayer =
+    result.currentPlayer === PlayerNum.p1 ? PlayerNum.p2 : PlayerNum.p1;
 
   return result;
 }
@@ -238,19 +246,16 @@ export function initGameState(stateConfigFile: BoardState): GameState {
 }
 
 export async function runConnect4(stateConfigFile: BoardState) {
-  const gameState = initGameState(stateConfigFile);
+  let gameState = initGameState(stateConfigFile);
 
   printBoardStateToConsole(boardStateToString(gameState));
   let validMove = false;
-  while (!validMove) {
+  while (true) {
     const columnToPlay = await readNextPlay(gameState);
     try {
-      gameState.boardState = playToken(
-        gameState.boardState,
-        columnToPlay,
-        PlayerNum.p1,
-      );
+      gameState = playToken(gameState, columnToPlay);
       validMove = true;
+      printBoardStateToConsole(boardStateToString(gameState));
     } catch (e) {
       console.log(
         boardLayout.ERROR_COLUMN_FULL.replace(
@@ -260,6 +265,5 @@ export async function runConnect4(stateConfigFile: BoardState) {
       );
     }
   }
-  printBoardStateToConsole(boardStateToString(gameState));
   rl.close();
 }
