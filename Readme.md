@@ -99,7 +99,7 @@ Ex: `myGameGrid.json`
 
 # Play a token
 
-Once the game started, the board displayed, representing the provided json file.
+Once the game started, the board displayed, representing the provided json file.  
 ![image](https://github.com/user-attachments/assets/65182e94-1e5d-412d-942e-1e1cc8a9ceb9)
 
 Your token character is indicated below `-- You are player 2: x --`.  
@@ -111,5 +111,5 @@ To add a token you have to choose a column number according to the display `  1 
 Put your choice `Please enter the column number you want to play your token o [1-7]: `
 ![image](https://github.com/user-attachments/assets/3a60862a-46ba-414d-abfd-8038e1bb1a12)
 
-then press enter
+then press enter  
 ![image](https://github.com/user-attachments/assets/52a567ac-5714-4054-8881-9a7b8d639ba8)
