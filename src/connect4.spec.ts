@@ -1,74 +1,20 @@
 import { describe, expect, test, vi } from "vitest";
-import { main } from "./index";
 import {
-  boardLayout,
-  boardStateToString,
   checkBoardStateConsistency,
   countNbTokens,
-  GameState,
-  getPlayerTokenChar,
   initGameState,
-  PlayerNum,
   playToken,
-  printBoardStateToConsole,
-  runConnect4,
 } from "./connect4";
+import { GameState, PlayerNum } from "./types/gameState";
+import {
+  printBoardStateToConsole,
+  boardStateToString,
+} from "./layout/cliLayout";
 
 interface TestingGameState extends GameState {
   boardDisplay?: string;
   boardDisplayAfterFirstMove?: string;
 }
-
-describe("Got the player token char with 'getPlayerToken'", () => {
-  test("For Player 1'", () => {
-    expect(getPlayerTokenChar(PlayerNum.p1)).toBe(boardLayout.PLAYER_ONE_TOKEN);
-  });
-  test("For Player 2'", () => {
-    expect(getPlayerTokenChar(PlayerNum.p2)).toBe(boardLayout.PLAYER_TWO_TOKEN);
-  });
-  test("For empty space", () => {
-    expect(getPlayerTokenChar(PlayerNum.empty)).toBe(boardLayout.EMPTY_TOKEN);
-  });
-});
-
-test("Got a layouted board using 'boardStateToString'", () => {
-  const correctGameState: TestingGameState = {
-    boardState: [
-      [0, 0, 0, 0, 1, 0, 0],
-      [0, 0, 0, 0, 2, 0, 0],
-      [0, 2, 1, 0, 2, 0, 0],
-      [0, 2, 1, 1, 2, 0, 2],
-      [0, 1, 1, 2, 1, 1, 1],
-      [0, 2, 2, 1, 1, 2, 2],
-    ],
-    boardDisplay: `
-+---+---+---+---+---+---+---+
-|   |   |   |   | o |   |   |
-|   |   |   |   | x |   |   |
-|   | x | o |   | x |   |   |
-|   | x | o | o | x |   | x |
-|   | o | o | x | o | o | o |
-|   | x | x | o | o | x | x |
-+---+---+---+---+---+---+---+
-  1   2   3   4   5   6   7  
-
--- You are player: o --
-`,
-    currentPlayer: PlayerNum.p1,
-  };
-  expect(boardStateToString(correctGameState)).toBe(
-    correctGameState.boardDisplay,
-  );
-});
-
-test("Displaying the board using 'printBoardStateToConsole'", () => {
-  const consoleSpy = vi.spyOn(console, "log");
-  const testingString: string = "Test console display";
-
-  printBoardStateToConsole(testingString);
-
-  expect(consoleSpy).toHaveBeenCalledWith(testingString);
-});
 
 test("countNbToken", () => {
   const boardState = [
@@ -80,7 +26,11 @@ test("countNbToken", () => {
     [0, 2, 2, 1, 1, 2, 2],
   ];
 
-  expect(countNbTokens(boardState)).toEqual([20, 11, 11]);
+  expect(countNbTokens(boardState)).toEqual({
+    emptyCount: 20,
+    p1Count: 11,
+    p2Count: 11,
+  });
 });
 
 describe("When a board state contains 'flying tokens', it", () => {
@@ -155,7 +105,7 @@ describe("When a board state contains a wrong number of token, it", () => {
   });
 });
 
-describe("Entry point 'runConnect4'", () => {
+describe("Entry point 'initGameState'", () => {
   test("displays a game board with correct game state", () => {
     const consoleSpy = vi.spyOn(console, "log");
     const correctGameState: TestingGameState = {
@@ -178,7 +128,7 @@ describe("Entry point 'runConnect4'", () => {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 
--- You are player: o --
+-- You are player 2: x --
 `,
       currentPlayer: PlayerNum.p1,
     };
@@ -228,25 +178,22 @@ describe("Entry point 'runConnect4'", () => {
 +---+---+---+---+---+---+---+
   1   2   3   4   5   6   7  
 
--- You are player: o --
+-- You are player 2: x --
 `,
       currentPlayer: PlayerNum.p1,
     };
     test("in a correct column, the game board's display refreshes with the new token", () => {
-      const updatedBoardState = playToken(correctGameState.boardState, 1, 1);
-      expect(
-        boardStateToString({
-          boardState: updatedBoardState,
-          currentPlayer: PlayerNum.p1,
-        }),
-      ).toBe(correctGameState.boardDisplayAfterFirstMove);
+      const gameState = playToken(correctGameState, 1);
+      expect(boardStateToString(gameState)).toBe(
+        correctGameState.boardDisplayAfterFirstMove,
+      );
     });
 
     test("in a full column, an error throws to indicate the problem to the user", () => {
       const colNum: number = 5;
-      expect(() =>
-        playToken(correctGameState.boardState, colNum, 1),
-      ).toThrowError(`Cannot add token into column ${colNum} which is full.`);
+      expect(() => playToken(correctGameState, colNum)).toThrowError(
+        `Cannot add token into column ${colNum} which is full.`,
+      );
     });
   });
 });
