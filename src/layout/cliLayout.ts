@@ -13,6 +13,7 @@ export enum boardLayout {
   EMPTY_TOKEN = " ",
   NB_ROWS = 6,
   NB_COLUMN = 7,
+  NB_TOKEN_IN_A_FOUR_LINE = 4,
 }
 
 export function printBoardGameToConsole(boardState: String): void {

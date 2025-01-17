@@ -186,7 +186,7 @@ export function getWinner(board: BoardState): VictoryState {
 
       for (const { x, y } of directions) {
         buffer = [[col, row]];
-        for (let step = 1; step < 4; step++) {
+        for (let step = 1; step < boardLayout.NB_TOKEN_IN_A_FOUR_LINE; step++) {
           const newRow = row + step * y;
           const newCol = col + step * x;
           if (
@@ -201,7 +201,7 @@ export function getWinner(board: BoardState): VictoryState {
 
           buffer.push([newCol, newRow]);
         }
-        if (buffer.length === 4) {
+        if (buffer.length === boardLayout.NB_TOKEN_IN_A_FOUR_LINE) {
           return {
             player: token,
             fourLineCoordinates: buffer,
