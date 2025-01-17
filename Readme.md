@@ -10,11 +10,18 @@ npm i
 
 ## Run
 
-To run a game, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it')
+To run a game with a stared not empty board, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it with a given json file')
 
 ```bash
 npm run dev ./src/testConfig.json
 ```
+
+To run a fresh game with en empty board : (please read part 'How to use it without any starting state')
+
+```bash
+npm run dev ./src/testConfig.json
+```
+
 
 ## Test
 
@@ -29,7 +36,7 @@ docker build -t ts-cli-app .
 docker run ts-cli-app
 ```
 
-# How to use it
+# How to use it with a given json file
 
 ## 1. Create the json file that represents the state of the board.
 
@@ -119,7 +126,11 @@ then press enter
 
 ![image](https://github.com/user-attachments/assets/52a567ac-5714-4054-8881-9a7b8d639ba8)
 
-It's now the scond player turn.
+It's now the second player turn.
+
+# How to use it without any starting state
+
+Once the game has started, a player is chosen at random. Then each player in turn plays a token. 
 
 # End game and win detection
 
