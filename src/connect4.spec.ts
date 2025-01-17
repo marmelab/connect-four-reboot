@@ -152,6 +152,7 @@ describe("Entry point 'initGameState'", () => {
       victoryState: {
         player: PlayerNum.empty,
         fourLineCoordinates: [],
+        isDraw: false,
       },
     };
 
@@ -215,6 +216,7 @@ describe("getWinner", () => {
     expect(getWinner(board)).toStrictEqual({
       player: expectedWinner,
       fourLineCoordinates: [],
+      isDraw: isFull(board),
     });
   });
   const horizontalWin1 = [
@@ -247,6 +249,7 @@ describe("getWinner", () => {
           [2, 3],
           [3, 3],
         ],
+        isDraw: false,
       });
     },
   );
@@ -280,6 +283,7 @@ describe("getWinner", () => {
           [4, 3],
           [4, 4],
         ],
+        isDraw: false,
       });
     },
   );
@@ -313,6 +317,7 @@ describe("getWinner", () => {
           [3, 2],
           [4, 1],
         ],
+        isDraw: false,
       });
     },
   );
@@ -346,6 +351,7 @@ describe("getWinner", () => {
           [4, 3],
           [5, 4],
         ],
+        isDraw: false,
       });
     },
   );
@@ -387,5 +393,57 @@ describe("isFull", () => {
         [2, 2, 1, 1, 2, 2, 1],
       ]),
     ).toBe(true);
+  });
+});
+
+describe("getWinner", () => {
+  it("should return false for isDraw with an empty board", () => {
+    expect(
+      getWinner([
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: false,
+    });
+  });
+
+  it("should return false for an ongoing board", () => {
+    expect(
+      getWinner([
+        [0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 2, 0, 0],
+        [0, 2, 1, 0, 2, 0, 0],
+        [0, 2, 1, 1, 2, 0, 2],
+        [0, 1, 1, 2, 1, 1, 1],
+        [0, 2, 2, 1, 1, 2, 2],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: false,
+    });
+  });
+  it("should return true for a full board without winner", () => {
+    expect(
+      getWinner([
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: true,
+    });
   });
 });

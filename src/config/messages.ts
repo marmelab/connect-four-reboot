@@ -9,6 +9,7 @@ export const messages = {
   ERROR_COLUMN_FULL: "Cannot add token into column $ which is full.\n",
   WINNER_MESSAGE:
     "\n-- Player " + PLACEHOLDER + ": " + PLACEHOLDER + " Win! --",
+  DRAW_MESSAGE: "-- It's a draw ! --",
   ERROR_INVALID_NEXT_ROUND_ANSWER:
     "Invalid answer, please tip Y if you want another round, otherwise N.",
 };

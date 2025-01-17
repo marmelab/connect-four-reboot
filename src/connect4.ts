@@ -124,7 +124,11 @@ export function initGameState(stateConfigFile: BoardState): GameState {
   const gameState: GameState = {
     boardState: stateConfigFile,
     currentPlayer: PlayerNum.empty,
-    victoryState: { player: PlayerNum.empty, fourLineCoordinates: [] },
+    victoryState: {
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: false,
+    },
   };
   const count: CountNbTokens = countNbTokens(gameState.boardState);
   gameState.currentPlayer =
@@ -139,7 +143,10 @@ export async function runConnect4(stateConfigFile: BoardState) {
   printBoardGameToConsole(boardGameToString(gameState));
   let validMove = false;
 
-  while (gameState.victoryState.player === PlayerNum.empty) {
+  while (
+    gameState.victoryState.player === PlayerNum.empty &&
+    !gameState.victoryState.isDraw
+  ) {
     const columnToPlay = await readNextPlay();
     try {
       gameState = playToken(gameState, columnToPlay);
@@ -198,6 +205,7 @@ export function getWinner(board: BoardState): VictoryState {
           return {
             player: token,
             fourLineCoordinates: buffer,
+            isDraw: false,
           };
         }
       }
@@ -207,6 +215,7 @@ export function getWinner(board: BoardState): VictoryState {
   return {
     player: PlayerNum.empty,
     fourLineCoordinates: [],
+    isDraw: isFull(board),
   };
 }
 

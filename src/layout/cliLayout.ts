@@ -71,7 +71,9 @@ export function boardGameToString(gameState: GameState): String {
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
   // Player information
-  if (gameState.victoryState.player === PlayerNum.empty) {
+  if (gameState.victoryState.isDraw) {
+    resultDisplay.push(`${messages.DRAW_MESSAGE}`);
+  } else if (gameState.victoryState.player === PlayerNum.empty) {
     resultDisplay.push(
       `${messages.INFORMATIONS.replace(
         PLACEHOLDER,

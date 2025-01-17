@@ -39,6 +39,7 @@ test("Got a layouted board using 'boardStateToString'", () => {
     victoryState: {
       player: PlayerNum.empty,
       fourLineCoordinates: [],
+      isDraw: false,
     },
   };
   const boardDisplay = `
