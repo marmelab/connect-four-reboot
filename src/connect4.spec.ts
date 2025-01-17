@@ -7,11 +7,13 @@ import {
   getWinner,
   isFull,
 } from "./connect4";
-import { BoardState, GameState, PlayerNum } from "./types/gameState";
 import {
-  printBoardStateToConsole,
-  boardStateToString,
-} from "./layout/cliLayout";
+  BoardState,
+  GameState,
+  PlayerNum,
+  VictoryState,
+} from "./types/gameState";
+import { printBoardGameToConsole, boardGameToString } from "./layout/cliLayout";
 
 test("countNbToken", () => {
   const boardState = [
@@ -115,8 +117,8 @@ describe("Entry point 'initGameState'", () => {
 -- You are player 2: x --
 `;
 
-    printBoardStateToConsole(
-      boardStateToString(initGameState(correctBoardState)),
+    printBoardGameToConsole(
+      boardGameToString(initGameState(correctBoardState)),
     );
 
     expect(consoleSpy).toHaveBeenCalledWith(boardDisplay);
@@ -147,7 +149,10 @@ describe("Entry point 'initGameState'", () => {
         [0, 2, 2, 1, 1, 2, 2],
       ],
       currentPlayer: PlayerNum.p1,
-      winner: PlayerNum.empty,
+      victoryState: {
+        player: PlayerNum.empty,
+        fourLineCoordinates: [],
+      },
     };
 
     const boardDisplayAfterFirstMove = `
@@ -165,7 +170,7 @@ describe("Entry point 'initGameState'", () => {
 `;
     test("in a correct column, the game board's display refreshes with the new token", () => {
       const gameState = playToken(correctGameState, 1);
-      expect(boardStateToString(gameState)).toBe(boardDisplayAfterFirstMove);
+      expect(boardGameToString(gameState)).toBe(boardDisplayAfterFirstMove);
     });
 
     test("in a full column, an error throws to indicate the problem to the user", () => {
@@ -207,7 +212,10 @@ describe("getWinner", () => {
     ["ongoing", ongoingBoard, 0],
     ["draw", drawBoard, 0],
   ])("should return 0 if the board is %s", (_msg, board, expectedWinner) => {
-    expect(getWinner(board)).toBe(expectedWinner);
+    expect(getWinner(board)).toStrictEqual({
+      player: expectedWinner,
+      fourLineCoordinates: [],
+    });
   });
   const horizontalWin1 = [
     [0, 0, 0, 0, 0, 0, 0],
@@ -231,7 +239,15 @@ describe("getWinner", () => {
   ])(
     "should return %s if they have a horizontal four",
     (_msg, board, expectedWinner) => {
-      expect(getWinner(board)).toBe(expectedWinner);
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [0, 3],
+          [1, 3],
+          [2, 3],
+          [3, 3],
+        ],
+      });
     },
   );
   const verticalWin1 = [
@@ -256,7 +272,15 @@ describe("getWinner", () => {
   ])(
     "should return %s if they have a vertical four",
     (_msg, board, expectedWinner) => {
-      expect(getWinner(board)).toBe(expectedWinner);
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [4, 1],
+          [4, 2],
+          [4, 3],
+          [4, 4],
+        ],
+      });
     },
   );
   const diagonalWin1 = [
@@ -281,7 +305,15 @@ describe("getWinner", () => {
   ])(
     "should return %s if they have a diagonal four",
     (_msg, board, expectedWinner) => {
-      expect(getWinner(board)).toBe(expectedWinner);
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [1, 4],
+          [2, 3],
+          [3, 2],
+          [4, 1],
+        ],
+      });
     },
   );
   const diagonal2Win1 = [
@@ -306,7 +338,15 @@ describe("getWinner", () => {
   ])(
     "should return %s if they have a diagonal four",
     (_msg, board, expectedWinner) => {
-      expect(getWinner(board)).toBe(expectedWinner);
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [2, 1],
+          [3, 2],
+          [4, 3],
+          [5, 4],
+        ],
+      });
     },
   );
 });

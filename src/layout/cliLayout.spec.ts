@@ -3,19 +3,25 @@ import { GameState, PlayerNum } from "../types/gameState";
 import {
   getPlayerTokenChar,
   boardLayout,
-  boardStateToString,
-  printBoardStateToConsole,
+  boardGameToString,
+  printBoardGameToConsole,
 } from "./cliLayout";
 
 describe("Got the player token char with 'getPlayerToken'", () => {
   test("For Player 1'", () => {
-    expect(getPlayerTokenChar(PlayerNum.p1)).toBe(boardLayout.PLAYER_ONE_TOKEN);
+    expect(getPlayerTokenChar(PlayerNum.p1, false)).toBe(
+      boardLayout.PLAYER_ONE_TOKEN,
+    );
   });
   test("For Player 2'", () => {
-    expect(getPlayerTokenChar(PlayerNum.p2)).toBe(boardLayout.PLAYER_TWO_TOKEN);
+    expect(getPlayerTokenChar(PlayerNum.p2, false)).toBe(
+      boardLayout.PLAYER_TWO_TOKEN,
+    );
   });
   test("For empty space", () => {
-    expect(getPlayerTokenChar(PlayerNum.empty)).toBe(boardLayout.EMPTY_TOKEN);
+    expect(getPlayerTokenChar(PlayerNum.empty, false)).toBe(
+      boardLayout.EMPTY_TOKEN,
+    );
   });
 });
 
@@ -30,7 +36,10 @@ test("Got a layouted board using 'boardStateToString'", () => {
       [0, 2, 2, 1, 1, 2, 2],
     ],
     currentPlayer: PlayerNum.p1,
-    winner: PlayerNum.empty,
+    victoryState: {
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+    },
   };
   const boardDisplay = `
 +---+---+---+---+---+---+---+
@@ -46,5 +55,5 @@ test("Got a layouted board using 'boardStateToString'", () => {
 -- You are player 1: o --
 `;
 
-  expect(boardStateToString(correctGameState)).toBe(boardDisplay);
+  expect(boardGameToString(correctGameState)).toBe(boardDisplay);
 });

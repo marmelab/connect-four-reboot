@@ -26,7 +26,7 @@ export async function readNextPlay(): Promise<number> {
     const answer = await question(
       messages.PROMPT_ASK_COLUMN.replace(
         PLACEHOLDER,
-        getPlayerTokenChar(PlayerNum.p1),
+        getPlayerTokenChar(PlayerNum.p1, false),
       ),
     );
     numAnswer = Number(answer);
