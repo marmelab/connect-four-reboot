@@ -12,4 +12,7 @@ export const messages = {
   DRAW_MESSAGE: "-- It's a draw ! --",
   ERROR_INVALID_NEXT_ROUND_ANSWER:
     "Invalid answer, please tip Y if you want another round, otherwise N.",
+  READY_TO_START: "Ready to start ? [Y|N]: ",
+  ERROR_INVALID_READY_TO_START_ANSWER:
+    "Invalid answer, please tip Y if you want to start, otherwise N.",
 };

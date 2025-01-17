@@ -11,7 +11,12 @@ import {
   boardGameToString,
   printBoardGameToConsole,
 } from "./layout/cliLayout.js";
-import { closePrompt, readForNextRound, readNextPlay } from "./prompt.js";
+import {
+  closePrompt,
+  readForNextRound,
+  readForStart,
+  readNextPlay,
+} from "./prompt.js";
 import { transpose } from "./tools.js";
 
 /**
@@ -80,12 +85,13 @@ function checkForProhibitedFlyingTokens(boardState: BoardState) {
 export function countNbTokens(boardState: BoardState): CountNbTokens {
   const flatSortedBoardState: Array<PlayerNum> = boardState.flat(2).sort();
 
-  const emptyCount = flatSortedBoardState.findIndex(
+  const emptyCount = flatSortedBoardState.filter(
+    (elem) => elem === PlayerNum.empty,
+  ).length;
+
+  const p1Count = flatSortedBoardState.filter(
     (elem) => elem === PlayerNum.p1,
-  );
-  const p1Count =
-    flatSortedBoardState.findIndex((elem) => elem === PlayerNum.p2) -
-    emptyCount;
+  ).length;
 
   return {
     emptyCount: emptyCount,
@@ -120,9 +126,15 @@ export function checkBoardStateConsistency(boardState: BoardState): void {
 /**
  * @throws SyntaxError if the board is invalid (checkBoardStateConsistency)
  */
-export function initGameState(stateConfigFile: BoardState): GameState {
+export function initGameState(stateConfigFile: BoardState | null): GameState {
+  const boardState: BoardState = stateConfigFile
+    ? stateConfigFile
+    : Array.from({ length: Number(boardLayout.NB_ROWS) }, () =>
+        Array(boardLayout.NB_COLUMN).fill(0),
+      );
+
   const gameState: GameState = {
-    boardState: stateConfigFile,
+    boardState: boardState,
     currentPlayer: PlayerNum.empty,
     victoryState: {
       player: PlayerNum.empty,
@@ -137,7 +149,7 @@ export function initGameState(stateConfigFile: BoardState): GameState {
   return gameState;
 }
 
-export async function runConnect4(stateConfigFile: BoardState) {
+export async function runConnect4(stateConfigFile: BoardState | null) {
   let gameState = initGameState(stateConfigFile);
 
   printBoardGameToConsole(boardGameToString(gameState));
@@ -161,8 +173,17 @@ export async function runConnect4(stateConfigFile: BoardState) {
   menu(stateConfigFile);
 }
 
-export async function menu(stateConfigFile: BoardState) {
+export async function menu(stateConfigFile: BoardState | null) {
   const answer = await readForNextRound();
+  if (answer) {
+    runConnect4(stateConfigFile);
+  } else {
+    closePrompt();
+  }
+}
+
+export async function welcome(stateConfigFile: BoardState | null) {
+  const answer = await readForStart();
   if (answer) {
     runConnect4(stateConfigFile);
   } else {
