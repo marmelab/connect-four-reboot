@@ -4,13 +4,14 @@ import {
   CountNbTokens,
   GameState,
   PlayerNum,
+  VictoryState,
 } from "./types/gameState.js";
 import {
   boardLayout,
-  boardStateToString,
-  printBoardStateToConsole,
+  boardGameToString,
+  printBoardGameToConsole,
 } from "./layout/cliLayout.js";
-import { readNextPlay } from "./prompt.js";
+import { closePrompt, readForNextRound, readNextPlay } from "./prompt.js";
 import { transpose } from "./tools.js";
 
 /**
@@ -44,6 +45,8 @@ export function playToken(gameState: GameState, column: number): GameState {
   result.boardState[newTokenIndex][column - 1] = result.currentPlayer;
   result.currentPlayer =
     result.currentPlayer === PlayerNum.p1 ? PlayerNum.p2 : PlayerNum.p1;
+
+  result.victoryState = getWinner(result.boardState);
 
   return result;
 }
@@ -121,6 +124,7 @@ export function initGameState(stateConfigFile: BoardState): GameState {
   const gameState: GameState = {
     boardState: stateConfigFile,
     currentPlayer: PlayerNum.empty,
+    victoryState: getWinner(stateConfigFile),
   };
   const count: CountNbTokens = countNbTokens(gameState.boardState);
   gameState.currentPlayer =
@@ -132,18 +136,85 @@ export function initGameState(stateConfigFile: BoardState): GameState {
 export async function runConnect4(stateConfigFile: BoardState) {
   let gameState = initGameState(stateConfigFile);
 
-  printBoardStateToConsole(boardStateToString(gameState));
+  printBoardGameToConsole(boardGameToString(gameState));
   let validMove = false;
-  while (true) {
+
+  while (
+    gameState.victoryState.player === PlayerNum.empty &&
+    !gameState.victoryState.isDraw
+  ) {
     const columnToPlay = await readNextPlay();
     try {
       gameState = playToken(gameState, columnToPlay);
       validMove = true;
-      printBoardStateToConsole(boardStateToString(gameState));
+      printBoardGameToConsole(boardGameToString(gameState));
     } catch (e) {
       console.log(
         messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, `${columnToPlay}`),
       );
     }
   }
+  menu(stateConfigFile);
+}
+
+export async function menu(stateConfigFile: BoardState) {
+  const answer = await readForNextRound();
+  if (answer) {
+    runConnect4(stateConfigFile);
+  } else {
+    closePrompt();
+  }
+}
+
+export function getWinner(board: BoardState): VictoryState {
+  const directions = [
+    { x: 1, y: 0 }, // horizontal
+    { x: 0, y: 1 }, // vertical
+    { x: 1, y: 1 }, // diagonal down-right
+    { x: 1, y: -1 }, // diagonal up-right
+  ];
+
+  let buffer: Array<[Number, number]> = [];
+  for (let row = 0; row < boardLayout.NB_ROWS; row++) {
+    for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
+      const token = board[row][col];
+      if (token === PlayerNum.empty) continue;
+
+      for (const { x, y } of directions) {
+        buffer = [[col, row]];
+        for (let step = 1; step < boardLayout.NB_TOKEN_IN_A_FOUR_LINE; step++) {
+          const newRow = row + step * y;
+          const newCol = col + step * x;
+          if (
+            newRow < 0 ||
+            newRow >= boardLayout.NB_ROWS ||
+            newCol < 0 ||
+            newCol >= boardLayout.NB_COLUMN ||
+            board[newRow][newCol] !== token
+          ) {
+            break;
+          }
+
+          buffer.push([newCol, newRow]);
+        }
+        if (buffer.length === boardLayout.NB_TOKEN_IN_A_FOUR_LINE) {
+          return {
+            player: token,
+            fourLineCoordinates: buffer,
+            isDraw: false,
+          };
+        }
+      }
+    }
+  }
+
+  return {
+    player: PlayerNum.empty,
+    fourLineCoordinates: [],
+    isDraw: isFull(board),
+  };
+}
+
+export function isFull(board: BoardState): boolean {
+  return board.flat().every((cell) => cell !== PlayerNum.empty);
 }

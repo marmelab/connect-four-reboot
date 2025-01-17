@@ -97,7 +97,7 @@ Each player must have the same number of tokens +/-1 (depending on who have play
 Save the game grid where you want, in the format shown above, in a text (json) file.
 Ex: `myGameGrid.json`
 
-# Play a token
+# each player in turn plays a token
 
 Once the game started, the board displayed, representing the provided json file.
 
@@ -118,3 +118,16 @@ Put your choice `Please enter the column number you want to play your token o [1
 then press enter
 
 ![image](https://github.com/user-attachments/assets/52a567ac-5714-4054-8881-9a7b8d639ba8)
+
+It's now the scond player turn.
+
+# End game and win detection
+
+You have 3 end game conditions :
+- Player 1 win
+- Player 2 win
+- It's a game draw
+
+The game automatically detects victory and highlights the 4 victorious tokens in a row. 
+
+![image](https://github.com/user-attachments/assets/861c03a5-841f-4621-b467-ae67c87718f7)

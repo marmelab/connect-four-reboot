@@ -1,6 +1,6 @@
 import { messages, PLACEHOLDER } from "../config/messages.js";
 import { PlayerNum } from "../types/gameState.js";
-import { GameState } from "../types/gameState";
+import { GameState, BoardState, VictoryState } from "../types/gameState";
 
 export enum boardLayout {
   TOP = "+---+---+---+---+---+---+---+",
@@ -8,21 +8,31 @@ export enum boardLayout {
   SEPARATOR = "|",
   PLAYER_ONE_TOKEN = "o",
   PLAYER_TWO_TOKEN = "x",
+  PLAYER_ONE_WIN_TOKEN = "🅾",
+  PLAYER_TWO_WIN_TOKEN = "🅧",
   EMPTY_TOKEN = " ",
   NB_ROWS = 6,
   NB_COLUMN = 7,
+  NB_TOKEN_IN_A_FOUR_LINE = 4,
 }
 
-export function printBoardStateToConsole(boardState: String): void {
+export function printBoardGameToConsole(boardState: String): void {
   console.clear();
   console.log(boardState);
 }
-export function getPlayerTokenChar(playerNum: PlayerNum): string {
+export function getPlayerTokenChar(
+  playerNum: PlayerNum,
+  isWInToken: boolean,
+): string {
   switch (playerNum) {
     case 1:
-      return boardLayout.PLAYER_ONE_TOKEN;
+      return isWInToken
+        ? boardLayout.PLAYER_ONE_WIN_TOKEN
+        : boardLayout.PLAYER_ONE_TOKEN;
     case 2:
-      return boardLayout.PLAYER_TWO_TOKEN;
+      return isWInToken
+        ? boardLayout.PLAYER_TWO_WIN_TOKEN
+        : boardLayout.PLAYER_TWO_TOKEN;
     case 0:
       return boardLayout.EMPTY_TOKEN;
     default:
@@ -30,29 +40,67 @@ export function getPlayerTokenChar(playerNum: PlayerNum): string {
   }
 }
 
-export function boardStateToString(gameState: GameState): String {
+export function boardStateToString(
+  boardState: BoardState,
+  victoryState: VictoryState,
+) {
   const resultDisplay: Array<String> = [];
 
-  resultDisplay.push(`\n${boardLayout.TOP}\n`);
+  let isWinToken = false;
 
-  gameState.boardState.forEach((line: Array<number>) => {
-    line.forEach((token: number) => {
-      resultDisplay.push(
-        `${boardLayout.SEPARATOR} ${getPlayerTokenChar(token)} `,
+  for (let row = 0; row < boardLayout.NB_ROWS; row++) {
+    for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
+      isWinToken = victoryState.fourLineCoordinates.some(
+        ([x, y]) => x === col && y === row,
       );
-    });
+      resultDisplay.push(
+        `${boardLayout.SEPARATOR} ${getPlayerTokenChar(boardState[row][col], isWinToken)} `,
+      );
+    }
     resultDisplay.push(`${boardLayout.SEPARATOR}\n`);
-  });
+  }
+  return resultDisplay.join("");
+}
+
+export function boardGameToString(gameState: GameState): String {
+  const resultDisplay: Array<String> = [];
+
+  // Board
+  resultDisplay.push(`\n${boardLayout.TOP}\n`);
+  resultDisplay.push(
+    boardStateToString(gameState.boardState, gameState.victoryState),
+  );
 
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
-  // Player information
-  resultDisplay.push(
-    `${messages.INFORMATIONS.replace(
-      PLACEHOLDER,
-      gameState.currentPlayer.toString(),
-    ).replace(PLACEHOLDER, getPlayerTokenChar(gameState.currentPlayer))}\n`,
-  );
-
+  // Player information :
+  // with a DRAW
+  if (gameState.victoryState.isDraw) {
+    resultDisplay.push(`${messages.DRAW_MESSAGE}`);
+  }
+  // during game
+  else if (gameState.victoryState.player === PlayerNum.empty) {
+    resultDisplay.push(
+      `${messages.INFORMATIONS.replace(
+        PLACEHOLDER,
+        gameState.currentPlayer.toString(),
+      ).replace(
+        PLACEHOLDER,
+        getPlayerTokenChar(gameState.currentPlayer, false),
+      )}\n`,
+    );
+  }
+  // with a WIN
+  else {
+    resultDisplay.push(
+      `${messages.WINNER_MESSAGE.replace(
+        PLACEHOLDER,
+        gameState.currentPlayer.toString(),
+      ).replace(
+        PLACEHOLDER,
+        getPlayerTokenChar(gameState.currentPlayer, false),
+      )}\n`,
+    );
+  }
   return resultDisplay.join("");
 }

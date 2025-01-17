@@ -1,20 +1,19 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test, it, vi } from "vitest";
 import {
   checkBoardStateConsistency,
   countNbTokens,
   initGameState,
   playToken,
+  getWinner,
+  isFull,
 } from "./connect4";
-import { GameState, PlayerNum } from "./types/gameState";
 import {
-  printBoardStateToConsole,
-  boardStateToString,
-} from "./layout/cliLayout";
-
-interface TestingGameState extends GameState {
-  boardDisplay?: string;
-  boardDisplayAfterFirstMove?: string;
-}
+  BoardState,
+  GameState,
+  PlayerNum,
+  VictoryState,
+} from "./types/gameState";
+import { printBoardGameToConsole, boardGameToString } from "./layout/cliLayout";
 
 test("countNbToken", () => {
   const boardState = [
@@ -35,72 +34,60 @@ test("countNbToken", () => {
 
 describe("When a board state contains 'flying tokens', it", () => {
   test("throws an error (at position [0,0])", () => {
-    const flyingTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [1, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const flyingTokenIncorrectBoardState1: BoardState = [
+      [1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(flyingTokenIncorrectGameState1.boardState),
+      checkBoardStateConsistency(flyingTokenIncorrectBoardState1),
     ).toThrowError("Given game state text contains missplaced token(s)");
   });
 
   test("throws an error (in the middle of the board game)", () => {
-    const flyingTokenIncorrectGameState2: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 1, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const flyingTokenIncorrectBoardState2: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 1, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(flyingTokenIncorrectGameState2.boardState),
+      checkBoardStateConsistency(flyingTokenIncorrectBoardState2),
     ).toThrowError("Given game state text contains missplaced token(s)");
   });
 });
 
 describe("When a board state contains a wrong number of token, it", () => {
   test("throws an error for p1", () => {
-    const nbTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [1, 1, 1, 2, 1, 1, 1],
-        [1, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const nbTokenIncorrectBoardState1: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [1, 1, 1, 2, 1, 1, 1],
+      [1, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(nbTokenIncorrectGameState1.boardState),
+      checkBoardStateConsistency(nbTokenIncorrectBoardState1),
     ).toThrowError("Given game state text contains wrong number of token(s)");
   });
 
   test("throws an error for p2", () => {
-    const nbTokenIncorrectGameState2: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 2, 0],
-        [0, 2, 1, 1, 2, 2, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
+    const nbTokenIncorrectBoardState2: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 2, 0],
+      [0, 2, 1, 1, 2, 2, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
     expect(() =>
-      checkBoardStateConsistency(nbTokenIncorrectGameState2.boardState),
+      checkBoardStateConsistency(nbTokenIncorrectBoardState2),
     ).toThrowError("Given game state text contains wrong number of token(s)");
   });
 });
@@ -108,16 +95,15 @@ describe("When a board state contains a wrong number of token, it", () => {
 describe("Entry point 'initGameState'", () => {
   test("displays a game board with correct game state", () => {
     const consoleSpy = vi.spyOn(console, "log");
-    const correctGameState: TestingGameState = {
-      boardState: [
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      boardDisplay: `
+    const correctBoardState: BoardState = [
+      [0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
+    const boardDisplay: string = `
 +---+---+---+---+---+---+---+
 |   |   |   |   | o |   |   |
 |   |   |   |   | x |   |   |
@@ -129,36 +115,31 @@ describe("Entry point 'initGameState'", () => {
   1   2   3   4   5   6   7  
 
 -- You are player 2: x --
-`,
-      currentPlayer: PlayerNum.p1,
-    };
+`;
 
-    printBoardStateToConsole(
-      boardStateToString(initGameState(correctGameState.boardState)),
+    printBoardGameToConsole(
+      boardGameToString(initGameState(correctBoardState)),
     );
 
-    expect(consoleSpy).toHaveBeenCalledWith(correctGameState.boardDisplay);
+    expect(consoleSpy).toHaveBeenCalledWith(boardDisplay);
   });
 
   test("throws an error with incorrect game state", () => {
-    const flyingTokenIncorrectGameState1: TestingGameState = {
-      boardState: [
-        [1, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ],
-      currentPlayer: PlayerNum.p1,
-    };
-    expect(() =>
-      initGameState(flyingTokenIncorrectGameState1.boardState),
-    ).toThrowError("Given game state text contains missplaced token(s)");
+    const flyingTokenIncorrectBoardState1: BoardState = [
+      [1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 2, 0, 0],
+      [0, 2, 1, 0, 2, 0, 0],
+      [0, 2, 1, 1, 2, 0, 2],
+      [0, 1, 1, 2, 1, 1, 1],
+      [0, 2, 2, 1, 1, 2, 2],
+    ];
+    expect(() => initGameState(flyingTokenIncorrectBoardState1)).toThrowError(
+      "Given game state text contains missplaced token(s)",
+    );
   });
 
   describe("'playtoken' - When the player place a token ", () => {
-    const correctGameState: TestingGameState = {
+    const correctGameState: GameState = {
       boardState: [
         [0, 0, 0, 0, 1, 0, 0],
         [0, 0, 0, 0, 2, 0, 0],
@@ -167,7 +148,15 @@ describe("Entry point 'initGameState'", () => {
         [0, 1, 1, 2, 1, 1, 1],
         [0, 2, 2, 1, 1, 2, 2],
       ],
-      boardDisplayAfterFirstMove: `
+      currentPlayer: PlayerNum.p1,
+      victoryState: {
+        player: PlayerNum.empty,
+        fourLineCoordinates: [],
+        isDraw: false,
+      },
+    };
+
+    const boardDisplayAfterFirstMove = `
 +---+---+---+---+---+---+---+
 |   |   |   |   | o |   |   |
 |   |   |   |   | x |   |   |
@@ -179,14 +168,10 @@ describe("Entry point 'initGameState'", () => {
   1   2   3   4   5   6   7  
 
 -- You are player 2: x --
-`,
-      currentPlayer: PlayerNum.p1,
-    };
+`;
     test("in a correct column, the game board's display refreshes with the new token", () => {
       const gameState = playToken(correctGameState, 1);
-      expect(boardStateToString(gameState)).toBe(
-        correctGameState.boardDisplayAfterFirstMove,
-      );
+      expect(boardGameToString(gameState)).toBe(boardDisplayAfterFirstMove);
     });
 
     test("in a full column, an error throws to indicate the problem to the user", () => {
@@ -194,6 +179,271 @@ describe("Entry point 'initGameState'", () => {
       expect(() => playToken(correctGameState, colNum)).toThrowError(
         `Cannot add token into column ${colNum} which is full.`,
       );
+    });
+  });
+});
+
+describe("getWinner", () => {
+  const emptyBoard = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+  ];
+  const ongoingBoard = [
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 2, 1, 0, 2, 0, 0],
+    [0, 2, 1, 1, 2, 0, 2],
+    [0, 1, 1, 2, 1, 1, 1],
+    [0, 2, 2, 1, 1, 2, 2],
+  ];
+  const drawBoard = [
+    [1, 1, 2, 2, 1, 1, 2],
+    [2, 2, 1, 1, 2, 2, 1],
+    [1, 1, 2, 2, 1, 1, 2],
+    [2, 2, 1, 1, 2, 2, 1],
+    [1, 1, 2, 2, 1, 1, 2],
+    [2, 2, 1, 1, 2, 2, 1],
+  ];
+  it.each([
+    ["empty", emptyBoard, 0],
+    ["ongoing", ongoingBoard, 0],
+    ["draw", drawBoard, 0],
+  ])("should return 0 if the board is %s", (_msg, board, expectedWinner) => {
+    expect(getWinner(board)).toStrictEqual({
+      player: expectedWinner,
+      fourLineCoordinates: [],
+      isDraw: isFull(board),
+    });
+  });
+  const horizontalWin1 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 1, 0, 2, 0, 0],
+    [1, 1, 1, 1, 2, 0, 2],
+    [2, 1, 1, 2, 1, 1, 1],
+    [2, 2, 2, 1, 1, 2, 2],
+  ];
+  const horizontalWin2 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 2, 0, 1, 0, 0],
+    [2, 2, 2, 2, 1, 0, 1],
+    [1, 2, 2, 1, 2, 2, 2],
+    [1, 1, 1, 2, 2, 1, 1],
+  ];
+  it.each([
+    ["1", horizontalWin1, 1],
+    ["2", horizontalWin2, 2],
+  ])(
+    "should return %s if they have a horizontal four",
+    (_msg, board, expectedWinner) => {
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [0, 3],
+          [1, 3],
+          [2, 3],
+          [3, 3],
+        ],
+        isDraw: false,
+      });
+    },
+  );
+  const verticalWin1 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [2, 0, 0, 0, 1, 0, 0],
+    [2, 0, 0, 0, 2, 0, 0],
+  ];
+  const verticalWin2 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [1, 0, 0, 0, 2, 0, 0],
+    [1, 0, 0, 0, 1, 0, 0],
+  ];
+  it.each([
+    ["1", verticalWin1, 1],
+    ["2", verticalWin2, 2],
+  ])(
+    "should return %s if they have a vertical four",
+    (_msg, board, expectedWinner) => {
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [4, 1],
+          [4, 2],
+          [4, 3],
+          [4, 4],
+        ],
+        isDraw: false,
+      });
+    },
+  );
+  const diagonalWin1 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0],
+    [0, 0, 1, 2, 1, 0, 0],
+    [0, 1, 2, 1, 2, 0, 0],
+    [0, 2, 1, 2, 1, 2, 0],
+  ];
+  const diagonalWin2 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0],
+    [0, 0, 2, 1, 1, 0, 0],
+    [0, 2, 1, 1, 2, 0, 0],
+    [0, 1, 2, 1, 2, 1, 0],
+  ];
+  it.each([
+    ["1", diagonalWin1, 1],
+    ["2", diagonalWin2, 2],
+  ])(
+    "should return %s if they have a diagonal four",
+    (_msg, board, expectedWinner) => {
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [1, 4],
+          [2, 3],
+          [3, 2],
+          [4, 1],
+        ],
+        isDraw: false,
+      });
+    },
+  );
+  const diagonal2Win1 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 1, 2, 1, 0, 0],
+    [0, 0, 2, 1, 2, 1, 0],
+    [0, 2, 1, 2, 1, 2, 0],
+  ];
+  const diagonal2Win2 = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 2, 1, 2, 0, 0],
+    [0, 0, 1, 2, 1, 2, 0],
+    [0, 1, 2, 1, 2, 1, 0],
+  ];
+  it.each([
+    ["1", diagonal2Win1, 1],
+    ["2", diagonal2Win2, 2],
+  ])(
+    "should return %s if they have a diagonal four",
+    (_msg, board, expectedWinner) => {
+      expect(getWinner(board)).toStrictEqual({
+        player: expectedWinner,
+        fourLineCoordinates: [
+          [2, 1],
+          [3, 2],
+          [4, 3],
+          [5, 4],
+        ],
+        isDraw: false,
+      });
+    },
+  );
+});
+
+describe("isFull", () => {
+  it("should return false for an empty board", () => {
+    expect(
+      isFull([
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ]),
+    ).toBe(false);
+  });
+  it("should return false for an ongoing board", () => {
+    expect(
+      isFull([
+        [0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 2, 0, 0],
+        [0, 2, 1, 0, 2, 0, 0],
+        [0, 2, 1, 1, 2, 0, 2],
+        [0, 1, 1, 2, 1, 1, 1],
+        [0, 2, 2, 1, 1, 2, 2],
+      ]),
+    ).toBe(false);
+  });
+  it("should return true for a full board", () => {
+    expect(
+      isFull([
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+      ]),
+    ).toBe(true);
+  });
+});
+
+describe("getWinner", () => {
+  it("should return false for isDraw with an empty board", () => {
+    expect(
+      getWinner([
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: false,
+    });
+  });
+
+  it("should return false for an ongoing board", () => {
+    expect(
+      getWinner([
+        [0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 2, 0, 0],
+        [0, 2, 1, 0, 2, 0, 0],
+        [0, 2, 1, 1, 2, 0, 2],
+        [0, 1, 1, 2, 1, 1, 1],
+        [0, 2, 2, 1, 1, 2, 2],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: false,
+    });
+  });
+  it("should return true for a full board without winner", () => {
+    expect(
+      getWinner([
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+        [1, 1, 2, 2, 1, 1, 2],
+        [2, 2, 1, 1, 2, 2, 1],
+      ]),
+    ).toStrictEqual({
+      player: PlayerNum.empty,
+      fourLineCoordinates: [],
+      isDraw: true,
     });
   });
 });

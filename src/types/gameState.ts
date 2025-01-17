@@ -12,7 +12,13 @@ export interface CountNbTokens {
 
 export type BoardState = Array<Array<PlayerNum>>;
 
+export interface VictoryState {
+  player: PlayerNum;
+  fourLineCoordinates: Array<[Number, number]>;
+  isDraw: boolean;
+}
 export interface GameState {
   boardState: BoardState;
   currentPlayer: PlayerNum;
+  victoryState: VictoryState;
 }
