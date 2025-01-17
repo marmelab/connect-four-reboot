@@ -96,10 +96,10 @@ export function boardGameToString(gameState: GameState): String {
     resultDisplay.push(
       `${messages.WINNER_MESSAGE.replace(
         PLACEHOLDER,
-        gameState.currentPlayer.toString(),
+        gameState.victoryState.player.toString(),
       ).replace(
         PLACEHOLDER,
-        getPlayerTokenChar(gameState.currentPlayer, false),
+        getPlayerTokenChar(gameState.victoryState.player, false),
       )}\n`,
     );
   }
