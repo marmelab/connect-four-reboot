@@ -57,3 +57,18 @@ export async function readForNextRound(): Promise<boolean> {
   }
   return answer.toUpperCase() === "Y";
 }
+
+export async function readForStart(): Promise<boolean> {
+  let isAnswerValid = false;
+  let answer = "";
+
+  while (!isAnswerValid) {
+    answer = (await question(messages.READY_TO_START)) + "";
+    if (answer.length !== 1 || "YyNn".indexOf(answer) < 0) {
+      console.error(messages.ERROR_INVALID_READY_TO_START_ANSWER);
+    } else {
+      isAnswerValid = true;
+    }
+  }
+  return answer.toUpperCase() === "Y";
+}

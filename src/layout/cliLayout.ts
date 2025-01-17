@@ -1,6 +1,7 @@
 import { messages, PLACEHOLDER } from "../config/messages.js";
 import { PlayerNum } from "../types/gameState.js";
 import { GameState, BoardState, VictoryState } from "../types/gameState";
+import * as fs from "fs";
 
 export enum boardLayout {
   TOP = "+---+---+---+---+---+---+---+",
@@ -103,4 +104,10 @@ export function boardGameToString(gameState: GameState): String {
     );
   }
   return resultDisplay.join("");
+}
+
+export function asciiArtIntro() {
+  const content = fs.readFileSync("./asciiart.txt", "utf-8");
+
+  console.log(content);
 }
