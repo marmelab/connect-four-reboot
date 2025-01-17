@@ -139,7 +139,7 @@ export function initGameState(stateConfigFile?: BoardState): GameState {
   const gameState: GameState = {
     boardState: boardState,
     currentPlayer: PlayerNum.empty,
-    victoryState: getWinner(stateConfigFile),
+    victoryState: getWinner(boardState),
   };
   const count: CountNbTokens = countNbTokens(gameState.boardState);
 
