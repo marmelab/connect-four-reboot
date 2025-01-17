@@ -123,15 +123,18 @@ export function checkBoardStateConsistency(boardState: BoardState): void {
   checkForWrongNumberOfTokens(boardState);
 }
 
+export function createEmptyBoardState() {
+  return Array.from({ length: Number(boardLayout.NB_ROWS) }, () =>
+    Array(boardLayout.NB_COLUMN).fill(0),
+  );
+}
 /**
  * @throws SyntaxError if the board is invalid (checkBoardStateConsistency)
  */
-export function initGameState(stateConfigFile: BoardState | null): GameState {
+export function initGameState(stateConfigFile?: BoardState): GameState {
   const boardState: BoardState = stateConfigFile
     ? stateConfigFile
-    : Array.from({ length: Number(boardLayout.NB_ROWS) }, () =>
-        Array(boardLayout.NB_COLUMN).fill(0),
-      );
+    : createEmptyBoardState();
 
   const gameState: GameState = {
     boardState: boardState,
@@ -143,18 +146,25 @@ export function initGameState(stateConfigFile: BoardState | null): GameState {
     },
   };
   const count: CountNbTokens = countNbTokens(gameState.boardState);
-  gameState.currentPlayer =
-    count.p1Count > count.p2Count ? PlayerNum.p1 : PlayerNum.p2;
+
+  gameState.currentPlayer = stateConfigFile
+    ? count.p1Count > count.p2Count
+      ? PlayerNum.p1
+      : PlayerNum.p2
+    : Math.floor(Math.random() * 2) + 1;
+
   checkBoardStateConsistency(gameState.boardState);
   return gameState;
 }
 
-export async function runConnect4(stateConfigFile: BoardState | null) {
+export async function runConnect4(stateConfigFile?: BoardState) {
   let gameState = initGameState(stateConfigFile);
 
   printBoardGameToConsole(boardGameToString(gameState));
+
   let validMove = false;
 
+  // Game loop
   while (
     gameState.victoryState.player === PlayerNum.empty &&
     !gameState.victoryState.isDraw
@@ -170,20 +180,9 @@ export async function runConnect4(stateConfigFile: BoardState | null) {
       );
     }
   }
-  menu(stateConfigFile);
-}
 
-export async function menu(stateConfigFile: BoardState | null) {
+  // Retry question
   const answer = await readForNextRound();
-  if (answer) {
-    runConnect4(stateConfigFile);
-  } else {
-    closePrompt();
-  }
-}
-
-export async function welcome(stateConfigFile: BoardState | null) {
-  const answer = await readForStart();
   if (answer) {
     runConnect4(stateConfigFile);
   } else {

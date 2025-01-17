@@ -6,6 +6,7 @@ import {
   playToken,
   getWinner,
   isFull,
+  createEmptyBoardState,
 } from "./connect4";
 import {
   BoardState,
@@ -396,40 +397,29 @@ describe("isFull", () => {
   });
 });
 
-describe("getWinner", () => {
-  it("should return false for isDraw with an empty board", () => {
-    expect(
-      getWinner([
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-      ]),
-    ).toStrictEqual({
-      player: PlayerNum.empty,
-      fourLineCoordinates: [],
-      isDraw: false,
-    });
+test("When the last token of the board win, it's a full board with a winner", () => {
+  expect(
+    getWinner([
+      [1, 1, 2, 2, 1, 2, 1],
+      [2, 2, 1, 1, 2, 2, 1],
+      [1, 1, 2, 2, 1, 2, 2],
+      [2, 2, 1, 1, 2, 2, 1],
+      [1, 1, 2, 2, 1, 1, 2],
+      [2, 2, 1, 1, 2, 1, 1],
+    ]),
+  ).toStrictEqual({
+    player: PlayerNum.p2,
+    fourLineCoordinates: [
+      [5, 0],
+      [5, 1],
+      [5, 2],
+      [5, 3],
+    ],
+    isDraw: false,
   });
+});
 
-  it("should return false for an ongoing board", () => {
-    expect(
-      getWinner([
-        [0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0],
-        [0, 2, 1, 0, 2, 0, 0],
-        [0, 2, 1, 1, 2, 0, 2],
-        [0, 1, 1, 2, 1, 1, 1],
-        [0, 2, 2, 1, 1, 2, 2],
-      ]),
-    ).toStrictEqual({
-      player: PlayerNum.empty,
-      fourLineCoordinates: [],
-      isDraw: false,
-    });
-  });
+describe("When a board is ", () => {
   it("should return true for a full board without winner", () => {
     expect(
       getWinner([
@@ -446,4 +436,16 @@ describe("getWinner", () => {
       isDraw: true,
     });
   });
+});
+
+test("Create an empty board state", () => {
+  const emptyBoardState: BoardState = [
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+  ];
+  expect(createEmptyBoardState()).toStrictEqual(emptyBoardState);
 });
