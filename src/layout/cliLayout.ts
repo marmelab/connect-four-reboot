@@ -14,6 +14,7 @@ export enum boardLayout {
   EMPTY_TOKEN = " ",
   NB_ROWS = 6,
   NB_COLUMN = 7,
+  NB_TOKEN_IN_A_FOUR_LINE = 4,
 }
 
 export function printBoardGameToConsole(boardState: String): void {
@@ -47,6 +48,7 @@ export function boardStateToString(
   const resultDisplay: Array<String> = [];
 
   let isWinToken = false;
+
   for (let row = 0; row < boardLayout.NB_ROWS; row++) {
     for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
       isWinToken = victoryState.fourLineCoordinates.some(
@@ -64,6 +66,7 @@ export function boardStateToString(
 export function boardGameToString(gameState: GameState): String {
   const resultDisplay: Array<String> = [];
 
+  // Board
   resultDisplay.push(`\n${boardLayout.TOP}\n`);
   resultDisplay.push(
     boardStateToString(gameState.boardState, gameState.victoryState),
@@ -71,10 +74,13 @@ export function boardGameToString(gameState: GameState): String {
 
   resultDisplay.push(`${boardLayout.BOTTOM}\n`);
 
-  // Player information
+  // Player information :
+  // with a DRAW
   if (gameState.victoryState.isDraw) {
     resultDisplay.push(`${messages.DRAW_MESSAGE}`);
-  } else if (gameState.victoryState.player === PlayerNum.empty) {
+  }
+  // during game
+  else if (gameState.victoryState.player === PlayerNum.empty) {
     resultDisplay.push(
       `${messages.INFORMATIONS.replace(
         PLACEHOLDER,
@@ -84,7 +90,9 @@ export function boardGameToString(gameState: GameState): String {
         getPlayerTokenChar(gameState.currentPlayer, false),
       )}\n`,
     );
-  } else {
+  }
+  // with a WIN
+  else {
     resultDisplay.push(
       `${messages.WINNER_MESSAGE.replace(
         PLACEHOLDER,
