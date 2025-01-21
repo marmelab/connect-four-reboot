@@ -13,7 +13,7 @@ const Connect4Page: React.FC = () => {
 
   return (
     <div>
-      Connect4 : {boardStateQP}
+      {/* Connect4 : {boardStateQP} */}
       <GameGrid boardState={boardState} />
     </div>
   );

@@ -7,7 +7,8 @@
     "dev-cli": "npm run dev --workspace connect-four-reboo-cli",
     "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
     "test": "vitest run --workspace connect-four-reboo-cli && vitest run --workspace connect-four-reboot-spa",
-    "format": "prettier --write 'packages/**/*.{ts,tsx,js,json,scss,md}'"
+    "format": "prettier --write 'packages/**/*.{ts,tsx,js,json,scss,md}'",
+    "clear": "rm -Rf node_modules apps/cli/dist apps/spa/dist apps/spa/node_modules apps/cli/node_modules"
   },
   "keywords": [
     "typescript",

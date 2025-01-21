@@ -10,7 +10,12 @@ npm i
 
 ## Run
 
-To run a game with a stared not empty board, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it with a given json file')
+You have two solutions to run the cli game:
+
+- using monorepo commands (please read connect-four-reboot/Readme.md)
+- using cli app commands:
+
+To run a game with a started not empty board, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it with a given json file'):
 
 ```bash
 npm run dev ./src/testConfig.json
@@ -19,9 +24,8 @@ npm run dev ./src/testConfig.json
 To run a fresh game with en empty board : (please read part 'How to use it without any starting state')
 
 ```bash
-npm run dev ./src/testConfig.json
+npm run dev
 ```
-
 
 ## Test
 
@@ -130,15 +134,16 @@ It's now the second player turn.
 
 # How to use it without any starting state
 
-Once the game has started, a player is chosen at random. Then each player in turn plays a token. 
+Once the game has started, a player is chosen at random. Then each player in turn plays a token.
 
 # End game and win detection
 
 You have 3 end game conditions :
+
 - Player 1 win
 - Player 2 win
 - It's a game draw
 
-The game automatically detects victory and highlights the 4 victorious tokens in a row. 
+The game automatically detects victory and highlights the 4 victorious tokens in a row.
 
 ![image](https://github.com/user-attachments/assets/861c03a5-841f-4621-b467-ae67c87718f7)
