@@ -4,7 +4,8 @@
   "description": "Mono repo for playing the game Connect Four as CLI or SPA.",
   "scripts": {
     "build": "npm run build --workspace connect-four-reboo-cli && npm run build --workspace connect-four-reboot-spa",
-    "dev": "npm run dev --workspace connect-four-reboo-cli & npm run dev --workspace connect-four-reboot-spa",
+    "dev-cli": "npm run dev --workspace connect-four-reboo-cli",
+    "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
     "test": "vitest run --workspace connect-four-reboo-cli && vitest run --workspace connect-four-reboot-spa",
     "format": "prettier --write 'packages/**/*.{ts,tsx,js,json,scss,md}'"
   },
