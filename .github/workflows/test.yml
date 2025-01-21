@@ -28,4 +28,4 @@ jobs:
         run: npx tsc --noEmit --project ./apps/cli
 
       - name: Run tests
-        run: npm test --project ./apps/cli
+        run: npm test
