@@ -28,12 +28,14 @@ Using the given url above, you can modify the displayed board, changing the valu
 state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1  
 will display this board:
 
+```
 0,0,0,0,0,0,0  
 0,0,0,0,0,0,0  
 0,1,0,0,0,0,0  
 2,2,1,0,1,0,0  
 1,2,2,2,1,0,1  
 1,2,1,1,1,2,1  
+```
 
 With :
 
