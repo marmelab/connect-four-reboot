@@ -6,9 +6,10 @@
     "build": "npm run build --workspace connect-four-reboot-cli && npm run build --workspace connect-four-reboot-spa",
     "dev-cli": "npm run dev --workspace connect-four-reboot-cli",
     "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
-    "test": "vitest run --project ./apps/cli",
+    "test": "vitest run",
     "format": "prettier --write 'packages/**/*.{ts,tsx,js,json,scss,md}'",
-    "clear": "rm -Rf node_modules apps/cli/dist apps/spa/dist apps/spa/node_modules apps/cli/node_modules"
+    "clear": "rm -Rf node_modules apps/cli/dist apps/spa/dist apps/spa/node_modules apps/cli/node_modules",
+    "type-check": "npx tsc --noEmit --project ./apps/cli && npx tsc --noEmit --project ./apps/spa"
   },
   "keywords": [
     "typescript",
