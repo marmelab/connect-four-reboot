@@ -1,0 +1,27 @@
+{
+  "name": "connect-four-reboot-cli",
+  "version": "0.9",
+  "description": "A CLI program for playing the game Connect Four.",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "node --loader ts-node/esm --no-warnings=ExperimentalWarning src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,json,css,scss,md}\""
+  },
+  "keywords": [
+    "typescript",
+    "cli"
+  ],
+  "author": "Marmelab",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.4.5"
+  },
+  "exports": {
+    "import": "./dist/index.js"
+  }
+}
