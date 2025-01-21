@@ -12,7 +12,7 @@ npm i
 
 You have two solutions to run the cli game:
 
-- using monorepo commands (please read connect-four-reboot/Readme.md)
+- using monorepo commands (as described in the [specifc Readme.md file of the monorepo](../../Readme.md)
 - using cli app commands:
 
 To run a game with a started not empty board, you need to provide a json file to load an initial state of the game board. (please read part 'How to use it with a given json file'):
@@ -21,7 +21,7 @@ To run a game with a started not empty board, you need to provide a json file to
 npm run dev ./src/testConfig.json
 ```
 
-To run a fresh game with en empty board : (please read part 'How to use it without any starting state')
+To run a fresh game with en empty board : (please read [this part](#How to use it without any starting state))
 
 ```bash
 npm run dev

@@ -6,7 +6,7 @@ interface ColumnProps {
   index: number;
 }
 
-const Column: React.FC<ColumnProps> = ({ values, index }) => {
+const Column = ({ values, index }: ColumnProps) => {
   return (
     <div className="column">
       {values.map((value, y) => (

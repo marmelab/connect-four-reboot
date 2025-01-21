@@ -18,17 +18,15 @@ npm run dev-spa
 
 # HowTo use cli interface
 
-Once
-
 ````bash
 npm run dev-cli
 ```bash
 
-is started, follow the instructions (please read app/cli/Readme.md)
+Once this command is started, follow the displayed instructions (please read the specific [Readme.md file for cli interface](apps/cli/Readme.md)).
 
 # HowTo use spa interface
 
-Using a browser, go to http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1
+Using a browser, go to [the Connect Four Reboot board game page].(http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1)
 
-Please read app/spa/Readme.md
+Please read the specific [Readme.md file for spa interface](apps/spa/Readme.md).
 ````

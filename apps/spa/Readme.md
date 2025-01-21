@@ -12,7 +12,7 @@ npm i
 
 You need to start the server before using a browser to display the web page. You have two solutions:
 
-- using monorepo commands (please connect-four-reboot/Readme.md)
+- using monorepo commands (as described in the [specifc Readme.md file of the monorepo](../../Readme.md)
 - using spa app commands:
 
 ```bash
@@ -20,9 +20,7 @@ You need to start the server before using a browser to display the web page. You
 npm run dev
 ```
 
-Then open your favorite browser and go to:
-
-http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1
+Then open your favorite browser and go to [the Connect Four Reboot board game page].(http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1)
 
 # How to configure the board with a given playing state
 

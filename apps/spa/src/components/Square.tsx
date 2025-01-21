@@ -6,7 +6,7 @@ interface SquareProps {
   y: number;
 }
 
-const Square: React.FC<SquareProps> = ({ value, x, y }) => {
+const Square = ({ value, x, y }: SquareProps) => {
   return (
     <div className="grid-item square" id={`${x}${y}`}>
       <div

@@ -6,7 +6,7 @@ interface GameGridProps {
   boardState: Array<Array<number>>;
 }
 
-const GameGrid: React.FC<GameGridProps> = ({ boardState }) => {
+const GameGrid = ({ boardState }: GameGridProps) => {
   return (
     <div id="game-grid">
       <div id="grid-container">
