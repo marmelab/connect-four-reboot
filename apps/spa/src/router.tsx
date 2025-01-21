@@ -1,13 +1,13 @@
-import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React from "react";
-import Home from "./pages/Home";
+import Home from "@pages/Home";
+import Connect4Page from "@pages/Connect4Page";
 
 export function Router() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="connect4Page" element={<Connect4Page />} />
       </Routes>
     </BrowserRouter>
   );
