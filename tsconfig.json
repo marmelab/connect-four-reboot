@@ -3,7 +3,8 @@
     "rootDir": ".",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false
   },
 
   "exclude": ["node_modules"]

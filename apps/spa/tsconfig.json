@@ -17,7 +17,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"]
     },
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
