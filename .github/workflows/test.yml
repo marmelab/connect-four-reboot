@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Check TypeScript types
-        run: npx tsc --noEmit
+        run: npx tsc --noEmit --project ./apps/cli
 
       - name: Run tests
-        run: npm test
+        run: npm test --project ./apps/cli
