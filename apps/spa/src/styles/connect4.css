@@ -1,46 +1,62 @@
 #game-grid {
-  padding: 20px;
-  max-height: 200px;
-  max-width: 525px;
+  margin-left: 100px;
+  margin-top: 50px;
+  max-height: 530px;
+  max-width: 660px;
+  width: 850px;
+  height: 1000px;
+  background-image: url("../assets/board.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 #grid-container {
   display: grid;
-  grid-template-columns: repeat(7, 75px);
+  grid-template-columns: repeat(7, 77px);
   grid-template-rows: repeat(6, 100px);
-  padding-top: 20px;
-  background-color: lightblue;
+  padding: 5px 0 0 55px;
+  background-color: transparent;
   max-height: 200px;
 }
 
 .column {
   display: flex;
   flex-direction: column;
+  height: 1000px;
+  align-items: center;
+  justify-content: center;
+  height: 373px;
+}
+
+.column:hover {
+  background-color: rgb(65, 70, 181);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+  margin-top: -5px;
 }
 
 .grid-item {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 75px;
+  width: 98px;
   height: 100px;
-  background-color: lightblue;
+  background-color: transparent;
   font-size: 14px;
   font-family: sans-serif;
 }
 
 .square {
-  width: 75px;
-  background-color: lightblue;
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 0 10px 0;
+  padding: 0px 5px 4px 0;
 }
 
 .circle {
-  width: 55px;
-  height: 55px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   text-align: center;
   justify-content: center;
@@ -48,13 +64,13 @@
 }
 
 .circle.red {
-  background-color: lightcoral;
+  background-color: red;
 }
 
 .circle.yellow {
-  background-color: lightgoldenrodyellow;
+  background-color: yellow;
 }
 
 .circle.empty {
-  background-color: black;
+  background-color: white;
 }

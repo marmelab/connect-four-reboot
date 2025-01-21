@@ -1,6 +1,10 @@
-import { messages, PLACEHOLDER } from "../config/messages.js";
-import { PlayerNum } from "../types/gameState.js";
-import { GameState, BoardState, VictoryState } from "../types/gameState";
+import { messages, PLACEHOLDER } from "../config/messages.ts";
+import { PlayerNum } from "../../../../packages/shared/types/gameState.ts";
+import {
+  GameState,
+  BoardState,
+  VictoryState,
+} from "../../../../packages/shared/types/gameState.ts";
 import * as fs from "fs";
 
 export enum boardLayout {

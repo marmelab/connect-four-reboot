@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true
+  },
+
+  "exclude": ["node_modules"]
+}

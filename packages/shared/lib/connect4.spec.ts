@@ -13,8 +13,11 @@ import {
   GameState,
   PlayerNum,
   VictoryState,
-} from "./types/gameState";
-import { printBoardGameToConsole, boardGameToString } from "./layout/cliLayout";
+} from "../types/gameState";
+import {
+  printBoardGameToConsole,
+  boardGameToString,
+} from "../../../apps/cli/src/layout/cliLayout";
 
 test("countNbToken", () => {
   const boardState = [

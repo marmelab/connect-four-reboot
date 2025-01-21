@@ -1,5 +1,8 @@
 import { describe, test, expect, vi } from "vitest";
-import { GameState, PlayerNum } from "../types/gameState";
+import {
+  GameState,
+  PlayerNum,
+} from "../../../../packages/shared/types/gameState";
 import {
   getPlayerTokenChar,
   boardLayout,

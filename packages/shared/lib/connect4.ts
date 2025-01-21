@@ -1,30 +1,23 @@
-import { messages, PLACEHOLDER } from "./config/messages.js";
+import { transpose } from "../tools/tools.js";
 import {
   BoardState,
   CountNbTokens,
   GameState,
   PlayerNum,
   VictoryState,
-} from "./types/gameState.js";
+} from "../types/gameState.js";
 import {
-  boardLayout,
-  boardGameToString,
-  printBoardGameToConsole,
-} from "./layout/cliLayout.js";
-import {
-  closePrompt,
-  readForNextRound,
-  readForStart,
-  readNextPlay,
-} from "./prompt.js";
-import { transpose } from "./tools.js";
+  CONNECT_FOUR,
+  PLACEHOLDER,
+  ERROR_MESSAGES,
+} from "../connect4.config.js";
 
 /**
  * @throws Error if the played column is already full
  */
 export function playToken(gameState: GameState, column: number): GameState {
-  if (column <= 0 || column > boardLayout.NB_COLUMN) {
-    throw new Error(messages.ERROR_INVALID_COLUMN_NUMBER);
+  if (column <= 0 || column > CONNECT_FOUR.NB_COLUMNS) {
+    throw new Error(ERROR_MESSAGES.ERROR_INVALID_COLUMN_NUMBER);
   }
   const result = structuredClone(gameState);
 
@@ -40,12 +33,12 @@ export function playToken(gameState: GameState, column: number): GameState {
   // highestTokenIndex = 0 => the column is full
   if (highestTokenIndex === 0) {
     throw new Error(
-      messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, "" + column),
+      ERROR_MESSAGES.ERROR_COLUMN_FULL.replace(PLACEHOLDER, "" + column),
     );
   }
   // highestTokenIndex = -1 => the column is empty
   const newTokenIndex =
-    (highestTokenIndex > -1 ? highestTokenIndex : boardLayout.NB_ROWS) - 1;
+    (highestTokenIndex > -1 ? highestTokenIndex : CONNECT_FOUR.NB_ROWS) - 1;
 
   result.boardState[newTokenIndex][column - 1] = result.currentPlayer;
   result.currentPlayer =
@@ -124,8 +117,8 @@ export function checkBoardStateConsistency(boardState: BoardState): void {
 }
 
 export function createEmptyBoardState() {
-  return Array.from({ length: Number(boardLayout.NB_ROWS) }, () =>
-    Array(boardLayout.NB_COLUMN).fill(0),
+  return Array.from({ length: Number(CONNECT_FOUR.NB_ROWS) }, () =>
+    Array(CONNECT_FOUR.NB_COLUMNS).fill(0),
   );
 }
 /**
@@ -153,39 +146,6 @@ export function initGameState(stateConfigFile?: BoardState): GameState {
   return gameState;
 }
 
-export async function runConnect4(stateConfigFile?: BoardState) {
-  let gameState = initGameState(stateConfigFile);
-
-  printBoardGameToConsole(boardGameToString(gameState));
-
-  let validMove = false;
-
-  // Game loop
-  while (
-    gameState.victoryState.player === PlayerNum.empty &&
-    !gameState.victoryState.isDraw
-  ) {
-    const columnToPlay = await readNextPlay();
-    try {
-      gameState = playToken(gameState, columnToPlay);
-      validMove = true;
-      printBoardGameToConsole(boardGameToString(gameState));
-    } catch (e) {
-      console.log(
-        messages.ERROR_COLUMN_FULL.replace(PLACEHOLDER, `${columnToPlay}`),
-      );
-    }
-  }
-
-  // Retry question
-  const answer = await readForNextRound();
-  if (answer) {
-    runConnect4(stateConfigFile);
-  } else {
-    closePrompt();
-  }
-}
-
 export function getWinner(board: BoardState): VictoryState {
   const directions = [
     { x: 1, y: 0 }, // horizontal
@@ -195,21 +155,25 @@ export function getWinner(board: BoardState): VictoryState {
   ];
 
   let buffer: Array<[Number, number]> = [];
-  for (let row = 0; row < boardLayout.NB_ROWS; row++) {
-    for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
+  for (let row = 0; row < CONNECT_FOUR.NB_ROWS; row++) {
+    for (let col = 0; col < CONNECT_FOUR.NB_COLUMNS; col++) {
       const token = board[row][col];
       if (token === PlayerNum.empty) continue;
 
       for (const { x, y } of directions) {
         buffer = [[col, row]];
-        for (let step = 1; step < boardLayout.NB_TOKEN_IN_A_FOUR_LINE; step++) {
+        for (
+          let step = 1;
+          step < CONNECT_FOUR.NB_TOKEN_IN_A_FOUR_LINE;
+          step++
+        ) {
           const newRow = row + step * y;
           const newCol = col + step * x;
           if (
             newRow < 0 ||
-            newRow >= boardLayout.NB_ROWS ||
+            newRow >= CONNECT_FOUR.NB_ROWS ||
             newCol < 0 ||
-            newCol >= boardLayout.NB_COLUMN ||
+            newCol >= CONNECT_FOUR.NB_COLUMNS ||
             board[newRow][newCol] !== token
           ) {
             break;
@@ -217,7 +181,7 @@ export function getWinner(board: BoardState): VictoryState {
 
           buffer.push([newCol, newRow]);
         }
-        if (buffer.length === boardLayout.NB_TOKEN_IN_A_FOUR_LINE) {
+        if (buffer.length === CONNECT_FOUR.NB_TOKEN_IN_A_FOUR_LINE) {
           return {
             player: token,
             fourLineCoordinates: buffer,

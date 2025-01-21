@@ -13,12 +13,10 @@
     "paths": {
       "~/*": ["./src/*"],
       "@components/*": ["src/components/*"],
-      "@utils/*": ["src/utils/*"],
       "@styles/*": ["src/styles/*"],
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"]
     },
-    "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "resolveJsonModule": true,
