@@ -18,7 +18,7 @@ body {
   margin: 0;
 }
 
-.body-layout {
+.body-layout > div {
   width: 100%;
   padding: 20px;
   margin: 10px 0;
@@ -27,7 +27,7 @@ body {
 
 #header-img {
   background-image: url("../assets/header.png");
-  background-size: 500px;
+  background-size: 400px;
   background-repeat: no-repeat;
   width: 830px;
   height: 100px;
@@ -63,6 +63,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 373px;
+  cursor: pointer;
 }
 
 .column:hover {
@@ -127,7 +128,7 @@ body {
   }
 }
 
-.active-player {
+.game-infos {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,7 +138,7 @@ body {
   color: #333;
 }
 
-.active-player span {
+.game-infos span {
   margin: 0 10px;
 }
 

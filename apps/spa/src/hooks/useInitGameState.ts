@@ -18,7 +18,6 @@ const useInitGameState = (content: string | null): GameState | null => {
       ),
     );
   });
-  console.log(boardState);
   return initGameState(boardState);
 };
 

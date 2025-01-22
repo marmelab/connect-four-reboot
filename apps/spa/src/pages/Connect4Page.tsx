@@ -12,7 +12,6 @@ const Connect4Page: React.FC = () => {
   const [searchParams] = useSearchParams();
   const boardStateQP = searchParams.get(BOARD_STATE_QP);
   const gameState = useInitGameState(boardStateQP);
-  const initialState: GameState | null = null;
 
   type Action =
     | { type: "SET_GAME_STATE"; payload: GameState }
@@ -33,13 +32,7 @@ const Connect4Page: React.FC = () => {
     }
   };
 
-  const [state, dispatch] = useReducer(gameReducer, initialState);
-
-  useEffect(() => {
-    if (gameState && state === null) {
-      dispatch({ type: "SET_GAME_STATE", payload: gameState });
-    }
-  }, [gameState, state]);
+  const [state, dispatch] = useReducer(gameReducer, gameState);
 
   const handlePlayToken = (column: number) => {
     dispatch({ type: "PLAY_TOKEN", payload: { column } });
