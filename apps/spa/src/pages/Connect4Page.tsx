@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import GameGrid from "@components/GameGrid";
 import { useSearchParams } from "react-router-dom";
 import { playToken } from "../../../../packages/shared/lib/connect4";
@@ -12,19 +12,37 @@ const Connect4Page: React.FC = () => {
   const [searchParams] = useSearchParams();
   const boardStateQP = searchParams.get(BOARD_STATE_QP);
   const gameState = useInitGameState(boardStateQP);
+  const initialState: GameState | null = null;
 
-  const [state, setState] = useState<GameState | null>(gameState);
+  type Action =
+    | { type: "SET_GAME_STATE"; payload: GameState }
+    | { type: "PLAY_TOKEN"; payload: { column: number } };
 
-  // useEffect(() => {
-  //   if (boardStateQP) {
-  //     const initialState = useInitGameState(boardStateQP);
-  //     setState(initialState);
-  //   }
-  // }, [boardStateQP]);
+  const gameReducer = (
+    state: GameState | null,
+    action: Action,
+  ): GameState | null => {
+    switch (action.type) {
+      case "SET_GAME_STATE":
+        return action.payload;
+      case "PLAY_TOKEN":
+        if (state === null) return state;
+        return playToken(state, action.payload.column);
+      default:
+        return state;
+    }
+  };
 
-  const updateGameState = (newGameState: GameState) => {
-    // Mettre à jour le gameState en mémoire
-    setState(newGameState);
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  useEffect(() => {
+    if (gameState && state === null) {
+      dispatch({ type: "SET_GAME_STATE", payload: gameState });
+    }
+  }, [gameState, state]);
+
+  const handlePlayToken = (column: number) => {
+    dispatch({ type: "PLAY_TOKEN", payload: { column } });
   };
 
   return (
@@ -32,11 +50,7 @@ const Connect4Page: React.FC = () => {
       {state === null ? (
         <p>Game state is not available. Please try again later.</p>
       ) : (
-        <GameGrid
-          gameState={state}
-          playToken={playToken}
-          updateGameState={updateGameState}
-        />
+        <GameGrid gameState={state} playToken={handlePlayToken} />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { initGameState } from "../../../../packages/shared/lib/connect4";
 const useInitGameState = (content: string | null): GameState | null => {
   const boardState: Array<Array<number>> = [];
   if (!content) {
-    return null;
+    return initGameState();
   }
 
   const valArray: Array<number> = content.split(",").map((e) => Number(e));

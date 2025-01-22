@@ -1,3 +1,39 @@
+@font-face {
+  font-family: "HK Grotesk";
+  src:
+    url("fonts/HKGrotesk-Regular.woff2") format("woff2"),
+    url("fonts/HKGrotesk-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "HK Grotesk", sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.body-layout {
+  width: 100%;
+  padding: 20px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+#header-img {
+  background-image: url("../assets/header.png");
+  background-size: 500px;
+  background-repeat: no-repeat;
+  width: 830px;
+  height: 100px;
+  background-color: #050930;
+  background-position: center;
+}
 #game-grid {
   margin-left: 100px;
   margin-top: 50px;
@@ -31,7 +67,7 @@
 
 .column:hover {
   background-color: rgb(65, 70, 181);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   margin-top: -5px;
 }
 
@@ -60,17 +96,53 @@
   border-radius: 50%;
   text-align: center;
   justify-content: center;
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 4px 4px 2px rgba(0, 0, 0, 0.3);
 }
 
 .circle.red {
-  background-color: red;
+  background-color: #ed2901;
 }
 
 .circle.yellow {
-  background-color: yellow;
+  background-color: #f5bd59;
 }
 
 .circle.empty {
   background-color: white;
+  box-shadow: inset 0px -2px 2px rgba(0, 0, 0, 0.603);
+}
+
+.circle.highlight {
+  animation: pulse 0.75s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(11, 76, 3, 0.5);
+  }
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 0 50px lightblue;
+  }
+}
+
+.active-player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.active-player span {
+  margin: 0 10px;
+}
+
+.circle.small {
+  width: 30px;
+  height: 30px;
+  box-shadow: inset 4px 4px 2px rgba(0, 0, 0, 0.3);
 }

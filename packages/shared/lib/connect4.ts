@@ -199,6 +199,16 @@ export function getWinner(board: BoardState): VictoryState {
   };
 }
 
+export function isWinningToken(
+  victoryState: VictoryState,
+  columnIndex: number,
+  rowIndex: number,
+): boolean {
+  return victoryState.fourLineCoordinates.some(
+    ([x, y]) => x === columnIndex && y === rowIndex,
+  );
+}
+
 export function isFull(board: BoardState): boolean {
   return board.flat().every((cell) => cell !== PlayerNum.empty);
 }
