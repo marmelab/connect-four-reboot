@@ -1,16 +1,19 @@
 import React from "react";
+import type { PlayerNum } from "../../../../packages/shared/types/gameState";
+import { tokenColors } from "../consts";
 
 interface SquareProps {
-  value: number;
+  value: PlayerNum;
   x: number;
   y: number;
+  isWinningToken: boolean;
 }
 
-const Square = ({ value, x, y }: SquareProps) => {
+const Square = ({ value, x, y, isWinningToken }: SquareProps) => {
   return (
     <div className="grid-item square" id={`${x}${y}`}>
       <div
-        className={`circle ${value === 2 ? "red" : value === 1 ? "yellow" : "empty"}`}
+        className={`circle ${tokenColors[value]} ${isWinningToken ? "highlight" : ""}`}
       ></div>
     </div>
   );

@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 import fs from "fs";
-import { runConnect4 } from "./connect4.js";
-import { asciiArtIntro } from "./layout/cliLayout.js";
-import { closePrompt, readForStart } from "./prompt.js";
+import { asciiArtIntro } from "./layout/cliLayout.ts";
+import { readForStart, closePrompt } from "./prompt.ts";
+import { runConnect4 } from "./Connect4Cli.ts";
 
 export async function main() {
   try {

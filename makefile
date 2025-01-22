@@ -15,5 +15,11 @@ dev-cli: ## Run the cli interface
 dev-spa: ## Run the spa server
 	npm run dev-spa
 
+test: ## Run tests
+	npm run test
+
+type-check: ## Check types validity
+	npm run type-check
+
 clear: ## Cleans up various build-related directories like dist, node_modules, and build for both cli and spa interfaces
 	npm run clear 

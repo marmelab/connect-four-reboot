@@ -1,7 +1,12 @@
-import { messages, PLACEHOLDER } from "../config/messages.js";
-import { PlayerNum } from "../types/gameState.js";
-import { GameState, BoardState, VictoryState } from "../types/gameState";
+import { messages, PLACEHOLDER } from "../config/messages.ts";
+import { PlayerNum } from "../../../../packages/shared/types/gameState.ts";
+import {
+  GameState,
+  BoardState,
+  VictoryState,
+} from "../../../../packages/shared/types/gameState.ts";
 import * as fs from "fs";
+import { isWinningToken } from "../../../../packages/shared/lib/connect4.ts";
 
 export enum boardLayout {
   TOP = "+---+---+---+---+---+---+---+",
@@ -47,15 +52,10 @@ export function boardStateToString(
 ) {
   const resultDisplay: Array<String> = [];
 
-  let isWinToken = false;
-
   for (let row = 0; row < boardLayout.NB_ROWS; row++) {
     for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
-      isWinToken = victoryState.fourLineCoordinates.some(
-        ([x, y]) => x === col && y === row,
-      );
       resultDisplay.push(
-        `${boardLayout.SEPARATOR} ${getPlayerTokenChar(boardState[row][col], isWinToken)} `,
+        `${boardLayout.SEPARATOR} ${getPlayerTokenChar(boardState[row][col], isWinningToken(victoryState, col, row))} `,
       );
     }
     resultDisplay.push(`${boardLayout.SEPARATOR}\n`);

@@ -8,13 +8,11 @@ import {
   isFull,
   createEmptyBoardState,
 } from "./connect4";
+import { BoardState, GameState, PlayerNum } from "../types/gameState";
 import {
-  BoardState,
-  GameState,
-  PlayerNum,
-  VictoryState,
-} from "./types/gameState";
-import { printBoardGameToConsole, boardGameToString } from "./layout/cliLayout";
+  printBoardGameToConsole,
+  boardGameToString,
+} from "../../../apps/cli/src/layout/cliLayout";
 
 test("countNbToken", () => {
   const boardState = [
