@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useReducer } from "react";
 import GameGrid from "@components/GameGrid";
 import { useSearchParams } from "react-router-dom";
 import { playToken } from "../../../../packages/shared/lib/connect4";
