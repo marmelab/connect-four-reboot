@@ -52,8 +52,6 @@ export function boardStateToString(
 ) {
   const resultDisplay: Array<String> = [];
 
-  let isWinToken = false;
-
   for (let row = 0; row < boardLayout.NB_ROWS; row++) {
     for (let col = 0; col < boardLayout.NB_COLUMN; col++) {
       resultDisplay.push(
