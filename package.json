@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "description": "Mono repo for playing the game Connect Four as CLI or SPA.",
   "scripts": {
-    "build": "npm run build --workspace connect-four-reboot-cli && npm run build --workspace connect-four-reboot-spa && npm run build:ts --workspace connect-four-reboot-api",
+    "build-cli": "npm run build --workspace connect-four-reboot-cli",
+    "build-spa": "npm run build --workspace connect-four-reboot-spa",
+    "build-api": "npm run build:ts --workspace connect-four-reboot-api",
+    "build": "npm run build-cli && npm run build-spa && npm run build-api",
     "dev-cli": "npm run dev --workspace connect-four-reboot-cli",
     "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
     "dev-api": "npm run dev --workspace connect-four-reboot-api",
     "test": "vitest run && node --test",
-    "clear": "npm run --workspace connect-four-reboot-spa clear && npm run --workspace connect-four-reboot-cli clear && npm run --workspace connect-four-reboot-api clear",
-    "type-check": "npm run --workspace connect-four-reboot-spa type-check && npm run --workspace connect-four-reboot-cli type-check && npm run --workspace connect-four-reboot-api type-check"
+    "clear": "rm -rf node_modules && npm run clear --workspace connect-four-reboot-spa && npm run clear --workspace connect-four-reboot-cli && npm run clear --workspace connect-four-reboot-api",
+    "type-check": "npm run type-check --workspace connect-four-reboot-spa && npm run type-check --workspace connect-four-reboot-cli && npm run type-check --workspace connect-four-reboot-api"
   },
   "keywords": [
     "typescript",

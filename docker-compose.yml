@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  api:
+    image: node:20-alpine
+    container_name: connect4-api-service
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c " npm run clear --workspace connect-four-reboot-api && \
+      npm install --workspace connect-four-reboot-api && \
+      npm run build:ts --workspace connect-four-reboot-api &&\
+      npm run dev --workspace connect-four-reboot-api"
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: development
+    networks:
+      - connect4-network
+
+  spa:
+    image: node:20-alpine
+    container_name: connect4-spa
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c " npm run clear --workspace connect-four-reboot-spa && \
+      npm install --workspace connect-four-reboot-spa && \
+      npm run build --workspace connect-four-reboot-spa &&\
+      npm run dev --workspace connect-four-reboot-spa"
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    networks:
+      - connect4-network
+    depends_on:
+      - api
+
+networks:
+  connect4-network:
+    driver: bridge

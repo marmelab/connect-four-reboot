@@ -3,3 +3,5 @@ export const tokenColors = {
   1: "yellow",
   2: "red",
 };
+
+export const REST_API_URL = "http://localhost:3002";
