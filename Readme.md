@@ -24,6 +24,9 @@ Once this command is started, follow the displayed instructions (please read the
 
 # HowTo use spa interface
 
-Using a browser, go to [the Connect Four Reboot board game page](http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C1).
+Using a browser, go to:
+- [the Connect Four Reboot board game page with an initialisation state](http://localhost:3000/connect4Page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C2%2C2).  
+OR  
+- [the Connect Four Reboot board game page with an empty board](http://localhost:3000/connect4Page).
 
 Please read the specific [Readme.md file for spa interface](apps/spa/Readme.md).
