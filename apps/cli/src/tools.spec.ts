@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { transpose } from "./tools";
+import { transpose } from "./tools.ts";
 
 test("transpose", () => {
   const boardState = [

@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -17,8 +18,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"]
     },
+    "outDir": "./build",
     "verbatimModuleSyntax": false,
-    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true

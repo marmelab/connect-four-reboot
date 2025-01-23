@@ -10,7 +10,9 @@
     "dev": "node --loader ts-node/esm --no-warnings=ExperimentalWarning src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,json,css,scss,md}\""
+    "format": "prettier --write \"src/**/*.{js,ts,jsx,tsx,json,css,scss,md}\"",
+    "clear": "rm -rf node_modules build",
+    "type-check": "npx tsc"
   },
   "keywords": [
     "typescript",

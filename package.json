@@ -3,18 +3,19 @@
   "version": "0.0.1",
   "description": "Mono repo for playing the game Connect Four as CLI or SPA.",
   "scripts": {
-    "build": "npm run build --workspace connect-four-reboot-cli && npm run build --workspace connect-four-reboot-spa",
+    "build": "npm run build --workspace connect-four-reboot-cli && npm run build --workspace connect-four-reboot-spa && npm run build:ts --workspace connect-four-reboot-api",
     "dev-cli": "npm run dev --workspace connect-four-reboot-cli",
     "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
-    "test": "vitest run",
-    "format": "prettier --write 'packages/**/*.{ts,tsx,js,json,scss,md}'",
-    "clear": "rm -Rf node_modules apps/cli/dist apps/spa/dist apps/spa/node_modules apps/cli/node_modules",
-    "type-check": "npx tsc --noEmit --project ./apps/cli && npx tsc --noEmit --project ./apps/spa"
+    "dev-api": "npm run dev --workspace connect-four-reboot-api",
+    "test": "vitest run && node --test",
+    "clear": "npm run --workspace connect-four-reboot-spa clear && npm run --workspace connect-four-reboot-cli clear && npm run --workspace connect-four-reboot-api clear",
+    "type-check": "npm run --workspace connect-four-reboot-spa type-check && npm run --workspace connect-four-reboot-cli type-check && npm run --workspace connect-four-reboot-api type-check"
   },
   "keywords": [
     "typescript",
     "connect-four-reboot-cli",
-    "spa"
+    "spa",
+    "api"
   ],
   "author": "Marmelab",
   "license": "MIT",

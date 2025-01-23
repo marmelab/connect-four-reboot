@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "rootDir": ".",
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "allowImportingTsExtensions": true
   },
 
   "exclude": ["node_modules"]
