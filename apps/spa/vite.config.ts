@@ -1,9 +1,10 @@
 import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig({
-  plugins: [react()] as UserConfig["plugins"],
+  plugins: [react(), basicSsl()] as UserConfig["plugins"],
   server: {
     port: 3000,
   },

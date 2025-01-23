@@ -1,9 +1,28 @@
 import fastify from "fastify";
 import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
 import cors from "@fastify/cors";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
 dotenv.config();
 
-const server = fastify();
+const httpsOptions = {
+  key: fs.readFileSync(
+    path.join(__dirname, "..", "https", "fastify.localhost.key"),
+  ),
+  cert: fs.readFileSync(
+    path.join(__dirname, "..", "https", "fastify.localhost.cert"),
+  ),
+};
+
+const server = fastify({
+  http2: true,
+  https: httpsOptions,
+});
 
 server.register(cors, {
   origin: "*",
@@ -18,14 +37,11 @@ server.get("/", function (request, reply) {
 });
 
 // Run the server!
-server.listen(
-  { port: process.env.PORT ? Number(process.env.PORT) : 3001, host: "0.0.0.0" },
-  function (err, address) {
-    if (err) {
-      server.log.error(err);
-      process.exit(1);
-    }
+server.listen({ host: "0.0.0.0", port: 8443 }, function (err, address) {
+  if (err) {
+    server.log.error(err);
+    process.exit(1);
+  }
 
-    console.log(`Server is now listening on ${address}`);
-  },
-);
+  console.log(`Server is now listening on ${address}`);
+});

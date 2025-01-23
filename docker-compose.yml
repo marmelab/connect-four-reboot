@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   api:
     image: node:20-alpine
@@ -13,9 +11,9 @@ services:
       npm run build:ts --workspace connect-four-reboot-api &&\
       npm run dev --workspace connect-four-reboot-api"
     ports:
-      - "3002:3002"
+      - "8443:8443"
     environment:
-      NODE_ENV: development
+      - NODE_ENV=${NODE_ENV}
     networks:
       - connect4-network
 
@@ -33,7 +31,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
+      - NODE_ENV=${NODE_ENV}
+      - VITE_REST_API_URL=${VITE_REST_API_URL}
     networks:
       - connect4-network
     depends_on:
