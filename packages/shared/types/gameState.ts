@@ -24,7 +24,7 @@ export interface GameState {
 }
 
 export interface Game {
-  id: Number;
+  id: number;
   gameState: GameState;
   initBoardState: string | undefined;
 }

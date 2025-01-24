@@ -9,11 +9,13 @@ function Home() {
         actionText="2-player game - Same screen - Empty board"
         navigateTo="/connect4page"
         color={tokenColors[1]}
+        boardState={null}
       />
       <PlayButton
         actionText="2-player game - Same screen - Pre-loaded board"
-        navigateTo="/connect4page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C2%2C2"
+        navigateTo="/connect4page"
         color={tokenColors[2]}
+        boardState="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,2,1,0,2,0,0,1,2,2,2,1,0,1,1,2,1,1,1,2,2,2"
       />
     </div>
   );

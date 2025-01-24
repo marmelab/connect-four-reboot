@@ -6,6 +6,7 @@ export type ApiResponse = {
 
 const backendUrl = import.meta.env.VITE_REST_API_URL || "http://localhost:3000";
 const gamePath = "/game";
+const playtokenPath = "/playtoken";
 
 export const fetchHelloWorld = async (): Promise<ApiResponse> => {
   const response = await fetch(backendUrl);
@@ -24,6 +25,25 @@ export const createGame = async (state: string | null): Promise<Game> => {
   if (!response.ok) {
     const errorText = await JSON.parse(await response.text());
     throw new Error(`Failed to create a game : ${errorText.error}`);
+  }
+
+  return await response.json();
+};
+
+export const runPlayToken = async (
+  gameId: number,
+  column: number,
+): Promise<Game> => {
+  const gameUrl = `${backendUrl}${gamePath}/`;
+  const response = await fetch(
+    `${gameUrl}${gameId}${playtokenPath}?column=${column}`,
+    {
+      method: "POST",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to play token.");
   }
 
   return await response.json();

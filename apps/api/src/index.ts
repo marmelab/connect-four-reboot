@@ -14,7 +14,9 @@ import {
   initGameState,
   initGame,
   checkBoardStateConsistency,
+  playToken,
 } from "../../../packages/shared/lib/connect4";
+import { CONNECT_FOUR } from "../../../packages/shared/connect4.config";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -35,7 +37,11 @@ const server = fastify({
   https: httpsOptions,
 });
 
-let games: Game[] = new Array<Game>();
+type GamesById = {
+  [id: string]: Game;
+};
+
+let games: GamesById = {};
 
 server.register(cors, {
   origin: "*",
@@ -65,16 +71,37 @@ server.post("/game", function (request, reply) {
 
   const gameState: GameState = initGameState(boardState);
 
-  const game: Game = initGame(games.length + 1, gameState, state);
-  games.push(game);
+  const game: Game = initGame(Object.keys(games).length + 1, gameState, state);
+  games[game.id] = game;
 
+  reply.send(game);
+});
+
+server.post("/game/:id/playtoken", function (request, reply) {
+  const { column } = request.query as { column: number };
+
+  if (column < 1 || column > CONNECT_FOUR.NB_COLUMNS) {
+    reply
+      .status(400)
+      .send({ error: "Invalid column number - must be between [1 and 7]." });
+    return;
+  }
+
+  const { id } = request.params as { id: string };
+  const game = games[id];
+
+  if (!game) {
+    reply.code(404).send({ error: "Game not found" });
+    return;
+  }
+
+  game.gameState = playToken(game.gameState, column);
   reply.send(game);
 });
 
 server.get("/game/:id", function (request, reply) {
   const { id } = request.params as { id: string };
-
-  const game = games.find((g) => g.id === parseInt(id));
+  const game = games[parseInt(id)];
 
   if (!game) {
     reply.code(404).send({ error: "Game not found" });

@@ -1,30 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import Column from "@components/Column";
 import { transpose } from "../../../../packages/shared/tools/tools";
-import type { GameState } from "../../../../packages/shared/types/gameState";
+import type { Game } from "../../../../packages/shared/types/gameState";
 import GameInfos from "./GameInfos";
 
 interface GameGridProps {
-  gameState: GameState;
-  playToken: (column: number) => void;
+  game: Game;
+  onUpdateGame: (updatedGame: Game) => void;
 }
 
-const GameGrid = ({ gameState, playToken }: GameGridProps) => {
+const GameGrid = ({ game, onUpdateGame }: GameGridProps) => {
+  const [state, setState] = useState(game);
+  const handleUpdateGameState = (updatedGame: Game) => {
+    setState(updatedGame);
+    onUpdateGame(updatedGame);
+  };
   return (
     <div>
       <div id="game-grid">
         <div id="grid-container">
-          {transpose(gameState.boardState).map((column, index) => (
+          {transpose(game.gameState.boardState).map((column, index) => (
             <Column
-              gameState={gameState}
+              game={state}
               index={index}
-              onColumnClick={playToken}
+              onColumnClick={handleUpdateGameState}
               key={`column${index}`}
             />
           ))}
         </div>
       </div>
-      <GameInfos gameState={gameState} />
+      <GameInfos gameState={game.gameState} />
     </div>
   );
 };
