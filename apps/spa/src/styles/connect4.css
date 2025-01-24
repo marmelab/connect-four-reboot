@@ -100,15 +100,19 @@ body {
   box-shadow: inset 4px 4px 2px rgba(0, 0, 0, 0.3);
 }
 
-.circle.red {
+.red {
   background-color: #ed2901;
+  color: white;
+  text-shadow: 2px 2px #000;
 }
 
-.circle.yellow {
+.yellow {
   background-color: #f5bd59;
+  color: black;
+  text-shadow: 2px 2px white;
 }
 
-.circle.empty {
+.empty {
   background-color: white;
   box-shadow: inset 0px -2px 2px rgba(0, 0, 0, 0.603);
 }
@@ -146,4 +150,30 @@ body {
   width: 30px;
   height: 30px;
   box-shadow: inset 4px 4px 2px rgba(0, 0, 0, 0.3);
+}
+
+.play-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15vh;
+}
+
+.play-button {
+  font-family: "HK Grotesk", sans-serif;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 30px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  width: 470px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
 }
