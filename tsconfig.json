@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "esModuleInterop": true,
     "verbatimModuleSyntax": false,
     "emitDeclarationOnly": true,

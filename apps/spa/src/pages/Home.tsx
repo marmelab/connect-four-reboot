@@ -2,21 +2,6 @@ import PlayButton from "@components/PlayButton";
 import { tokenColors } from "../consts";
 
 function Home() {
-  // const [res, setRes] = useState<ApiResponse | null>(null);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res: ApiResponse = await fetchHelloWorld();
-  //       setRes(res);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
   return (
     <div>
       <h1>Welcome</h1>
@@ -30,7 +15,6 @@ function Home() {
         navigateTo="/connect4page?state=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C1%2C0%2C0%2C0%2C0%2C0%2C2%2C2%2C1%2C0%2C2%2C0%2C0%2C1%2C2%2C2%2C2%2C1%2C0%2C1%2C1%2C2%2C1%2C1%2C1%2C2%2C2%2C2"
         color={tokenColors[2]}
       />
-      {/* <span>{res?.hello}</span> */}
     </div>
   );
 }

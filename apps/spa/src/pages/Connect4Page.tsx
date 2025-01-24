@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import GameGrid from "@components/GameGrid";
 import { useSearchParams } from "react-router-dom";
 import { playToken } from "../../../../packages/shared/lib/connect4";
@@ -11,7 +11,13 @@ export const BOARD_STATE_QP_SEPARATOR_CHAR = ",";
 const Connect4Page: React.FC = () => {
   const [searchParams] = useSearchParams();
   const boardStateQP = searchParams.get(BOARD_STATE_QP);
-  const gameState = useInitGameState(boardStateQP);
+  const game = useInitGameState(boardStateQP);
+
+  useEffect(() => {
+    if (game?.gameState) {
+      dispatch({ type: "SET_GAME_STATE", payload: game.gameState });
+    }
+  }, [game]);
 
   type Action =
     | { type: "SET_GAME_STATE"; payload: GameState }
@@ -32,7 +38,7 @@ const Connect4Page: React.FC = () => {
     }
   };
 
-  const [state, dispatch] = useReducer(gameReducer, gameState);
+  const [state, dispatch] = useReducer(gameReducer, game?.gameState || null);
 
   const handlePlayToken = (column: number) => {
     dispatch({ type: "PLAY_TOKEN", payload: { column } });
@@ -41,7 +47,7 @@ const Connect4Page: React.FC = () => {
   return (
     <div>
       {state === null ? (
-        <p>Game state is not available. Please try again later.</p>
+        <p>Game state is not available.</p>
       ) : (
         <GameGrid gameState={state} playToken={handlePlayToken} />
       )}

@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": true,
     "resolveJsonModule": true,
@@ -20,13 +20,16 @@
     },
     "outDir": "./build",
     "baseUrl": ".",
-    "rootDir": ".",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "emitDeclarationOnly": false,
-    "allowImportingTsExtensions": false
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "../../packages/shared/types",
+    "../../packages/shared/lib"
+  ],
   "exclude": ["node_modules"]
 }

@@ -22,3 +22,9 @@ export interface GameState {
   currentPlayer: PlayerNum;
   victoryState: VictoryState;
 }
+
+export interface Game {
+  id: Number;
+  gameState: GameState;
+  initBoardState: string | undefined;
+}
