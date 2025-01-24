@@ -1,23 +1,21 @@
-import { useEffect, useState } from "react";
-import { ApiResponse, fetchHelloWorld } from "@services/api";
 import PlayButton from "@components/PlayButton";
 import { tokenColors } from "../consts";
 
 function Home() {
-  const [res, setRes] = useState<ApiResponse | null>(null);
+  // const [res, setRes] = useState<ApiResponse | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res: ApiResponse = await fetchHelloWorld();
-        setRes(res);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res: ApiResponse = await fetchHelloWorld();
+  //       setRes(res);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <div>
