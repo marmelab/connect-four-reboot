@@ -22,4 +22,4 @@ jobs:
       # 3. Deploy using SCP
       - name: Deploy to EC2
         run: |
-          make clear && scp -r -o StrictHostKeyChecking=no ./connect-four-reboot ec2-user@ec2-13-48-67-79.eu-north-1.compute.amazonaws.com:/home/ec2-user
+          make clear && scp -r -o StrictHostKeyChecking=no ./* ec2-user@ec2-13-48-67-79.eu-north-1.compute.amazonaws.com:/home/ec2-user/connect-four-reboot
