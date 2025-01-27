@@ -12,6 +12,8 @@ services:
       npm run dev --workspace connect-four-reboot-api"
     ports:
       - "8443:8443"
+    environment:
+      - VITE_REST_API_URL=${VITE_REST_API_URL}
     networks:
       - connect4-network
 
