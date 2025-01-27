@@ -57,7 +57,7 @@ function Home() {
             }}
           />
           <PlayButton
-            actionText="2-player game - same screen - Empty board"
+            actionText="2-player game - same screen - Pre-loaded board"
             navigateTo="/connect4page"
             color={tokenColors[2]}
             urlParameters={{

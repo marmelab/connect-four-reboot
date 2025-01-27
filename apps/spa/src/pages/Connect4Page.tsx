@@ -120,7 +120,9 @@ const Connect4Page: React.FC = () => {
           playerNum={playerNum}
           isSameScreen={isSameScreen}
         />
-        <ShareButton url={currentUrl} />
+        <div id="button-container">
+          {!isSameScreen ? <ShareButton url={currentUrl} /> : <></>}
+        </div>
       </div>
       <GameGrid
         game={game}

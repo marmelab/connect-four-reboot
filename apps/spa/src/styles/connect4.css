@@ -37,6 +37,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 20px;
+  height: 70px;
 }
 
 h1 {
@@ -83,6 +84,7 @@ h1 {
 .column:hover {
   background-color: #4146b5;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: -5px;
 }
 
 .column.disabled {
@@ -221,7 +223,7 @@ h1 {
   padding: 10px 30px;
   cursor: pointer;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
-  width: 425px;
+  width: 460px;
   max-width: 470px;
   margin: 5px;
   transition:
@@ -246,6 +248,10 @@ h1 {
   height: 50px;
   width: 180px;
   text-align: left;
+}
+
+#button-container {
+  width: 187px;
 }
 
 .share-button:hover {
