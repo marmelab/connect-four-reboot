@@ -1,24 +1,60 @@
 import PlayButton from "@components/PlayButton";
 import { tokenColors } from "../consts";
+import { useSearchParams } from "react-router-dom";
+import { PlayerNum } from "../../../../packages/shared/types/gameState";
 
 function Home() {
-  return (
-    <div>
-      <h1>Welcome</h1>
-      <PlayButton
-        actionText="2-player game - Same screen - Empty board"
-        navigateTo="/connect4page"
-        color={tokenColors[1]}
-        boardState={null}
-      />
-      <PlayButton
-        actionText="2-player game - Same screen - Pre-loaded board"
-        navigateTo="/connect4page"
-        color={tokenColors[2]}
-        boardState="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,2,1,0,2,0,0,1,2,2,2,1,0,1,1,2,1,1,1,2,2,2"
-      />
-    </div>
-  );
+  const renderSharedGameCase = (sharedGameId: string) => {
+    return (
+      <>
+        <div>
+          <h1>Welcome</h1>
+          <h2>You have been invited to play part {sharedGameId}</h2>
+          <PlayButton
+            actionText="OK, join the game !"
+            navigateTo="/connect4page"
+            color={tokenColors[1]}
+            urlParameters={{
+              gameId: sharedGameId,
+              playerNum: `${PlayerNum.p2}`,
+            }}
+          />
+        </div>
+      </>
+    );
+  };
+
+  const renderNewGamecase = () => {
+    return (
+      <div>
+        <h1>Welcome</h1>
+        <PlayButton
+          actionText="2-player game - Same screen - Empty board"
+          navigateTo="/connect4page"
+          color={tokenColors[1]}
+          urlParameters={{}}
+        />
+        <PlayButton
+          actionText="2-player game - Same screen - Pre-loaded board"
+          navigateTo="/connect4page"
+          color={tokenColors[2]}
+          urlParameters={{
+            boardState:
+              "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,2,1,0,2,0,0,1,2,2,2,1,0,1,1,2,1,1,1,2,2,2",
+          }}
+        />
+      </div>
+    );
+  };
+
+  const [searchParams] = useSearchParams();
+  const sharedGameId = searchParams.get("sharedGameId");
+
+  if (sharedGameId) {
+    return renderSharedGameCase(sharedGameId);
+  } else {
+    return renderNewGamecase();
+  }
 }
 
 export default Home;

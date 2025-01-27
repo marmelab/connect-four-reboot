@@ -6,6 +6,7 @@ import {
   GameState,
   PlayerNum,
   VictoryState,
+  GameType,
 } from "../types/gameState.js";
 import {
   CONNECT_FOUR,
@@ -240,11 +241,14 @@ export function initGame(
   id: number,
   gameState: GameState,
   state: string | undefined,
+  gameType: GameType,
 ): Game {
   return {
     id: id,
     gameState: gameState,
     initBoardState: state,
+    gameType: gameType,
+    stateVersion: 1,
   };
 }
 

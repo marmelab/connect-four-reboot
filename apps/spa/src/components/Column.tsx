@@ -9,19 +9,36 @@ import { runPlayToken } from "@services/api";
 interface ColumnProps {
   game: Game;
   index: number;
-  onColumnClick: (updatedGame: Game) => void;
+  onColumnClick: () => void;
+  playerNum: PlayerNum;
 }
 
-const Column = ({ game, index, onColumnClick }: ColumnProps) => {
+const Column = ({ game, index, onColumnClick, playerNum }: ColumnProps) => {
+  const isPlayerTurn =
+    (game.gameState.currentPlayer === PlayerNum.p1 &&
+      playerNum === PlayerNum.p1) ||
+    (!(game.gameState.currentPlayer === PlayerNum.p1) &&
+      playerNum === PlayerNum.p2);
+
+  const isGameFinished =
+    game.gameState.victoryState.isDraw ||
+    game.gameState.victoryState.player !== PlayerNum.empty;
+
+  const transposedBoard = transpose(game.gameState.boardState);
+
   const handleClick = async () => {
     if (game.gameState.victoryState.player !== PlayerNum.empty) {
       alert("The game is over.");
       return;
     }
+    if (!isPlayerTurn) {
+      alert("It's not your turn.");
+      return;
+    }
     try {
       const column = index + 1;
-      const updatedGameState: Game = await runPlayToken(game.id, column);
-      onColumnClick(updatedGameState);
+      await runPlayToken(game.id, column);
+      onColumnClick();
     } catch (error) {
       console.error("Error while playing token:", error);
       alert("An error occurred while playing the token.");
@@ -29,8 +46,11 @@ const Column = ({ game, index, onColumnClick }: ColumnProps) => {
   };
 
   return (
-    <div className="column" onClick={handleClick}>
-      {transpose(game.gameState.boardState)[index].map((value, y) => (
+    <div
+      className={`column ${!isPlayerTurn || isGameFinished ? "disabled" : ""}`}
+      onClick={isPlayerTurn ? handleClick : undefined}
+    >
+      {transposedBoard[index].map((value, y) => (
         <Square
           value={value}
           x={index}

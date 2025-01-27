@@ -56,6 +56,9 @@ server.get("/", function (request, reply) {
 });
 
 server.post("/game", function (request, reply) {
+  const { gameType: rawGameType } = request.query as { gameType?: string };
+  const gameType = rawGameType === "2" ? 2 : 1;
+
   const { state } = request.query as { state?: string };
 
   const boardState: BoardState | undefined = getBoardStateFromString(state);
@@ -71,7 +74,12 @@ server.post("/game", function (request, reply) {
 
   const gameState: GameState = initGameState(boardState);
 
-  const game: Game = initGame(Object.keys(games).length + 1, gameState, state);
+  const game: Game = initGame(
+    Object.keys(games).length + 1,
+    gameState,
+    state,
+    gameType,
+  );
   games[game.id] = game;
 
   reply.send(game);
@@ -96,6 +104,8 @@ server.post("/game/:id/playtoken", function (request, reply) {
   }
 
   game.gameState = playToken(game.gameState, column);
+  game.stateVersion += 1;
+  games[id] = game;
   reply.send(game);
 });
 
@@ -109,6 +119,20 @@ server.get("/game/:id", function (request, reply) {
   }
 
   reply.send(game);
+});
+
+server.get("/game/:id/stateVersion", function (request, reply) {
+  const { id } = request.params as { id: string };
+  const game = games[parseInt(id)];
+
+  if (!game) {
+    reply.code(404).send({ error: "Game not found" });
+    return;
+  }
+
+  const { stateVersion } = game;
+
+  reply.send({ stateVersion });
 });
 
 // Run the server!

@@ -27,4 +27,15 @@ export interface Game {
   id: number;
   gameState: GameState;
   initBoardState: string | undefined;
+  gameType: GameType;
+  stateVersion: number;
+}
+
+export enum GameType {
+  oneScreen = 1,
+  twoScreen = 2,
+}
+
+export interface GameStateVersionResponse {
+  stateVersion: number;
 }

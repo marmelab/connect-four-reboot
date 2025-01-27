@@ -7,14 +7,20 @@ interface PlayButtonProps {
   actionText: string;
   navigateTo: string;
   color: string;
-  boardState?: string | null;
+  urlParameters: Record<string, string>;
 }
+
+const initGame = async (gameParams: Record<string, string>): Promise<Game> => {
+  const boardState = gameParams.boardState || null;
+
+  return await createGame(boardState);
+};
 
 const PlayButton = ({
   actionText,
   navigateTo,
   color,
-  boardState,
+  urlParameters: gameParams,
 }: PlayButtonProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -25,10 +31,15 @@ const PlayButton = ({
     setError(null);
 
     try {
-      const game: Game = await createGame(boardState || null);
-      const gameParam = encodeURIComponent(JSON.stringify(game));
+      const game = await initGame(gameParams);
+      const urlParams = new URLSearchParams(
+        gameParams as Record<string, string>,
+      );
+      if (!gameParams?.gameId) {
+        urlParams.append("gameId", `${game.id}`);
+      }
 
-      navigate(`${navigateTo}?game=${gameParam}`);
+      navigate(`${navigateTo}?${urlParams.toString()}`);
     } catch (err) {
       setError(`Failed to create the game. Please try again. ${err}`);
     } finally {
