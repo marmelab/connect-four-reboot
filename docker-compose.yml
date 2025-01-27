@@ -12,7 +12,6 @@ services:
       npm run dev --workspace connect-four-reboot-api"
     ports:
       - "8443:8443"
-    environment:
     networks:
       - connect4-network
 
