@@ -27,4 +27,4 @@ jobs:
       # 3. Execute `docker-compose up -d`
       - name: Run Docker Compose
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-48-67-79.eu-north-1.compute.amazonaws.com "cd /home/ec2-user/connect-four-reboot/ && docker-compose --env-file .env.prod up -d"
+          ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-48-67-79.eu-north-1.compute.amazonaws.com "cd /home/ec2-user/connect-four-reboot/ && docker-compose --env-file .env.prod up --build -d"

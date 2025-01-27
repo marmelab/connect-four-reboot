@@ -4,6 +4,7 @@
   "description": "Fastify Rest API for connect four game.",
   "main": "app.js",
   "type": "module",
+  "internal": true,
   "directories": {
     "test": "test"
   },

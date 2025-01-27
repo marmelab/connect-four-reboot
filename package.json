@@ -2,6 +2,7 @@
   "name": "connect-four-reboot-monorepo",
   "version": "0.0.1",
   "description": "Mono repo for playing the game Connect Four as CLI or SPA.",
+  "internal": true,
   "scripts": {
     "build-cli": "npm run build --workspace connect-four-reboot-cli",
     "build-spa": "npm run build --workspace connect-four-reboot-spa",
@@ -11,8 +12,8 @@
     "dev-spa": "npm run dev --workspace connect-four-reboot-spa",
     "dev-api": "npm run dev --workspace connect-four-reboot-api",
     "test": "vitest run && node --test",
-    "clear": "rm -rf node_modules && npm run clear --workspace connect-four-reboot-spa && npm run clear --workspace connect-four-reboot-cli && npm run clear --workspace connect-four-reboot-api",
-    "type-check": "npm run type-check --workspace connect-four-reboot-spa && npm run type-check --workspace connect-four-reboot-cli && npm run type-check --workspace connect-four-reboot-api"
+    "clear": "rm -rf node_modules && npm run clear --workspaces",
+    "type-check": "npm run type-check --workspaces"
   },
   "keywords": [
     "typescript",

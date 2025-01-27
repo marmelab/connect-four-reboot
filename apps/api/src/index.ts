@@ -4,11 +4,7 @@ import path from "path";
 import fs from "fs";
 import cors from "@fastify/cors";
 import { fileURLToPath } from "url";
-import {
-  BoardState,
-  Game,
-  GameState,
-} from "../../../packages/shared/types/gameState";
+import { Game } from "../../../packages/shared/types/gameState";
 import {
   getBoardStateFromString,
   initGameState,
@@ -50,18 +46,13 @@ server.register(cors, {
   credentials: false,
 });
 
-// Declare a route
-server.get("/", function (request, reply) {
-  reply.send({ hello: "world" });
-});
-
 server.post("/game", function (request, reply) {
   const { gameType: rawGameType } = request.query as { gameType?: string };
   const gameType = rawGameType === "2" ? 2 : 1;
 
   const { state } = request.query as { state?: string };
 
-  const boardState: BoardState | undefined = getBoardStateFromString(state);
+  const boardState = getBoardStateFromString(state);
 
   try {
     if (boardState !== undefined) {
@@ -72,9 +63,9 @@ server.post("/game", function (request, reply) {
     return;
   }
 
-  const gameState: GameState = initGameState(boardState);
+  const gameState = initGameState(boardState);
 
-  const game: Game = initGame(
+  const game = initGame(
     Object.keys(games).length + 1,
     gameState,
     state,

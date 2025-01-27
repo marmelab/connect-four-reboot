@@ -16,4 +16,3 @@ export const messages = {
   ERROR_INVALID_READY_TO_START_ANSWER:
     "Invalid answer, please tip Y if you want to start, otherwise N.",
 };
-export const error = {};

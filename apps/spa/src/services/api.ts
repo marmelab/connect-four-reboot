@@ -3,17 +3,13 @@ import {
   GameStateVersionResponse,
 } from "../../../../packages/shared/types/gameState";
 
-export type ApiResponse = {
-  hello: string;
-};
-
-const backendUrl = import.meta.env.VITE_REST_API_URL || "http://localhost:3000";
-const gamePath = "/game";
+const backendUrl =
+  import.meta.env.VITE_REST_API_URL || "https://127.0.0.1:8443";
+const gameUrl = `${backendUrl}/game`;
 const playtokenPath = "/playtoken";
-const gameStateVersion = "/stateVersion";
+const gameStateVersionPath = "/stateVersion";
 
 export const createGame = async (state: string | null): Promise<Game> => {
-  const gameUrl = `${backendUrl}${gamePath}`;
   const url = state ? `${gameUrl}?state=${encodeURIComponent(state)}` : gameUrl;
 
   const response = await fetch(url, {
@@ -29,9 +25,9 @@ export const createGame = async (state: string | null): Promise<Game> => {
 };
 
 export const getGame = async (gameId: string): Promise<Game> => {
-  const gameUrl = `${backendUrl}${gamePath}/${encodeURIComponent(gameId)}`;
+  const gameUrlWithId = `${gameUrl}/${encodeURIComponent(gameId)}`;
 
-  const response = await fetch(gameUrl, {
+  const response = await fetch(gameUrlWithId, {
     method: "GET",
   });
 
@@ -46,7 +42,7 @@ export const getGame = async (gameId: string): Promise<Game> => {
 export const getGameStateVersion = async (
   gameId: number,
 ): Promise<GameStateVersionResponse> => {
-  const gameStateVersionUrl = `${backendUrl}${gamePath}/${encodeURIComponent(gameId)}${gameStateVersion}`;
+  const gameStateVersionUrl = `${gameUrl}/${encodeURIComponent(gameId)}${gameStateVersionPath}`;
 
   const response = await fetch(gameStateVersionUrl, {
     method: "GET",
@@ -66,9 +62,8 @@ export const runPlayToken = async (
   gameId: number,
   column: number,
 ): Promise<Game> => {
-  const gameUrl = `${backendUrl}${gamePath}/`;
   const response = await fetch(
-    `${gameUrl}${gameId}${playtokenPath}?column=${column}`,
+    `${gameUrl}/${gameId}${playtokenPath}?column=${column}`,
     {
       method: "POST",
     },

@@ -14,7 +14,7 @@ export const GAME_ID_QP = "gameId";
 export const SHARED_GAME_ID_QP = "sharedGameId";
 export const IS_SAME_SCREEN_QP = "isSameScreen";
 
-async function isGameStateNeedsUpdate(game: Game): Promise<boolean> {
+async function doesGameStateNeedsUpdate(game: Game): Promise<boolean> {
   try {
     const { stateVersion: newStateVersion } = await getGameStateVersion(
       game.id,
@@ -79,7 +79,7 @@ const Connect4Page: React.FC = () => {
       if (!game) {
         await updateGame(gameId);
       } else {
-        const needsUpdate = await isGameStateNeedsUpdate(game);
+        const needsUpdate = await doesGameStateNeedsUpdate(game);
         if (needsUpdate) {
           await updateGame(gameId);
         }

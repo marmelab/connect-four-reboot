@@ -3,6 +3,7 @@
   "version": "0.9",
   "description": "A CLI program for playing the game Connect Four.",
   "main": "dist/index.js",
+  "internal": true,
   "type": "module",
   "scripts": {
     "build": "tsc",

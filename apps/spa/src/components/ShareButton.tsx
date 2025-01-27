@@ -20,7 +20,7 @@ const ShareButton = ({ url }: ShareButtonProps) => {
 
   return (
     <button onClick={handleCopy} className="share-button">
-      {copied ? "URL Copied! ✅" : "Share Game URL 📋"}
+      {copied ? "✅ Game URL Copied" : "📋 Copy Game URL"}
     </button>
   );
 };
