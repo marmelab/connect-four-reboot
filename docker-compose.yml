@@ -13,7 +13,6 @@ services:
     ports:
       - "8443:8443"
     environment:
-      - NODE_ENV=${NODE_ENV}
     networks:
       - connect4-network
 
@@ -31,7 +30,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=${NODE_ENV}
       - VITE_REST_API_URL=${VITE_REST_API_URL}
     networks:
       - connect4-network
