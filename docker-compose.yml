@@ -7,6 +7,7 @@ services:
       - .:/app
       - /app/node_modules
     command: sh -c " npm run clear --workspace connect-four-reboot-api && \
+      npm i && \
       npm install --workspace connect-four-reboot-api && \
       npm run build:ts --workspace connect-four-reboot-api &&\
       npm run dev --workspace connect-four-reboot-api"

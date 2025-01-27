@@ -61,4 +61,4 @@ type-check: ## Check types validity
 	npm run type-check
 
 docker:
-	docker-compose --env-file .env.dev up -d	
+	docker-compose up -d	
