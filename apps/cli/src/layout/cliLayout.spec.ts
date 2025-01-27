@@ -2,13 +2,13 @@ import { describe, test, expect, vi } from "vitest";
 import {
   GameState,
   PlayerNum,
-} from "../../../../packages/shared/types/gameState";
+} from "../../../../packages/shared/types/gameState.ts";
 import {
   getPlayerTokenChar,
   boardLayout,
   boardGameToString,
   printBoardGameToConsole,
-} from "./cliLayout";
+} from "./cliLayout.ts";
 
 describe("Got the player token char with 'getPlayerToken'", () => {
   test("For Player 1'", () => {

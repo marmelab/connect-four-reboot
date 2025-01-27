@@ -1,35 +1,69 @@
 import React from "react";
 import Square from "@components/Square";
-import {
-  PlayerNum,
-  type GameState,
-} from "../../../../packages/shared/types/gameState";
+import { PlayerNum } from "../../../../packages/shared/types/gameState";
 import { transpose } from "../../../../packages/shared/tools/tools";
 import { isWinningToken } from "../../../../packages/shared/lib/connect4";
+import { Game } from "../../../../packages/shared/types/gameState";
+import { runPlayToken } from "@services/api";
 
 interface ColumnProps {
-  gameState: GameState;
+  game: Game;
   index: number;
-  onColumnClick: (column: number) => void;
+  onColumnClick: () => void;
+  playerNum: PlayerNum;
+  isSameScreen: boolean;
 }
 
-const Column = ({ gameState, index, onColumnClick }: ColumnProps) => {
-  const handleClick = () => {
-    if (gameState.victoryState.player !== PlayerNum.empty) {
+const Column = ({
+  game,
+  index,
+  onColumnClick,
+  playerNum,
+  isSameScreen,
+}: ColumnProps) => {
+  const isPlayerTurn =
+    isSameScreen ||
+    (game.gameState.currentPlayer === PlayerNum.p1 &&
+      playerNum === PlayerNum.p1) ||
+    (!(game.gameState.currentPlayer === PlayerNum.p1) &&
+      playerNum === PlayerNum.p2);
+
+  const isGameFinished =
+    game.gameState.victoryState.isDraw ||
+    game.gameState.victoryState.player !== PlayerNum.empty;
+
+  const transposedBoard = transpose(game.gameState.boardState);
+
+  const handleClick = async () => {
+    if (game.gameState.victoryState.player !== PlayerNum.empty) {
       alert("The game is over.");
       return;
     }
-    onColumnClick(index + 1);
+    if (!isPlayerTurn) {
+      alert("It's not your turn.");
+      return;
+    }
+    try {
+      const column = index + 1;
+      await runPlayToken(game.id, column);
+      onColumnClick();
+    } catch (error) {
+      console.error("Error while playing token:", error);
+      alert("An error occurred while playing the token.");
+    }
   };
 
   return (
-    <div className="column" onClick={handleClick}>
-      {transpose(gameState.boardState)[index].map((value, y) => (
+    <div
+      className={`column ${!isPlayerTurn || isGameFinished ? "disabled" : ""}`}
+      onClick={isPlayerTurn ? handleClick : undefined}
+    >
+      {transposedBoard[index].map((value, y) => (
         <Square
           value={value}
           x={index}
           y={y}
-          isWinningToken={isWinningToken(gameState.victoryState, index, y)}
+          isWinningToken={isWinningToken(game.gameState.victoryState, index, y)}
           key={`square${index}${y}`}
         />
       ))}

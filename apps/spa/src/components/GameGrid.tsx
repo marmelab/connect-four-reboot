@@ -1,30 +1,41 @@
-import React from "react";
 import Column from "@components/Column";
 import { transpose } from "../../../../packages/shared/tools/tools";
-import type { GameState } from "../../../../packages/shared/types/gameState";
-import GameInfos from "./GameInfos";
+import type {
+  Game,
+  PlayerNum,
+} from "../../../../packages/shared/types/gameState";
 
 interface GameGridProps {
-  gameState: GameState;
-  playToken: (column: number) => void;
+  game: Game;
+  onGridClick: () => void;
+  playerNum: PlayerNum;
+  isSameScreen: boolean;
 }
 
-const GameGrid = ({ gameState, playToken }: GameGridProps) => {
+const GameGrid = ({
+  game,
+  playerNum,
+  onGridClick,
+  isSameScreen,
+}: GameGridProps) => {
+  const columns = transpose(game.gameState.boardState);
+
   return (
     <div>
       <div id="game-grid">
         <div id="grid-container">
-          {transpose(gameState.boardState).map((column, index) => (
+          {columns.map((_, index) => (
             <Column
-              gameState={gameState}
+              game={game}
               index={index}
-              onColumnClick={playToken}
               key={`column${index}`}
+              playerNum={playerNum}
+              onColumnClick={onGridClick}
+              isSameScreen={isSameScreen}
             />
           ))}
         </div>
       </div>
-      <GameInfos gameState={gameState} />
     </div>
   );
 };

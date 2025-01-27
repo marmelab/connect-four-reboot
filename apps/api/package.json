@@ -1,0 +1,38 @@
+{
+  "name": "connect-four-reboot-api",
+  "version": "0.9",
+  "description": "Fastify Rest API for connect four game.",
+  "main": "app.js",
+  "type": "module",
+  "internal": true,
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 node --test -r ts-node/register \"test/**/*.ts\"",
+    "start": "npm run build:ts && node build/src/index.js",
+    "build:ts": "tsc",
+    "watch:ts": "tsc --watch",
+    "dev": "npx tsx src/index.ts",
+    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P build/src/index.js",
+    "clear": "rm -rf node_modules build",
+    "type-check": "npx tsc"
+  },
+  "keywords": [],
+  "author": "Marmelab",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cors": "^10.0.2",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.0.0",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "c8": "^10.1.2",
+    "concurrently": "^9.0.0",
+    "fastify-tsconfig": "^2.0.0",
+    "ts-node": "^10.4.0",
+    "typescript": "~5.6.3"
+  }
+}

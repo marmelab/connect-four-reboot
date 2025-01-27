@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -15,10 +16,11 @@
       "@components/*": ["src/components/*"],
       "@styles/*": ["src/styles/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@services/*": ["src/services/*"]
     },
+    "outDir": "./build",
     "verbatimModuleSyntax": false,
-    "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true

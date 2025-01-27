@@ -1,10 +1,12 @@
 import { transpose } from "../tools/tools.js";
 import {
+  Game,
   BoardState,
   CountNbTokens,
   GameState,
   PlayerNum,
   VictoryState,
+  GameType,
 } from "../types/gameState.js";
 import {
   CONNECT_FOUR,
@@ -49,10 +51,7 @@ export function playToken(gameState: GameState, column: number): GameState {
   return result;
 }
 
-/**
- * @throws SyntaxError if the board contains flying tokens
- */
-function checkForProhibitedFlyingTokens(boardState: BoardState) {
+function hasNoProhibitedFlyingTokens(boardState: BoardState): boolean {
   // Transpose the game board, allowing computing using colums instead lines
   const transposedState = transpose(boardState);
 
@@ -70,9 +69,7 @@ function checkForProhibitedFlyingTokens(boardState: BoardState) {
     },
     false,
   );
-  if (hasFlyingTokenError) {
-    throw new SyntaxError("Given game state text contains missplaced token(s)");
-  }
+  return !hasFlyingTokenError;
 }
 
 export function countNbTokens(boardState: BoardState): CountNbTokens {
@@ -94,26 +91,32 @@ export function countNbTokens(boardState: BoardState): CountNbTokens {
 }
 
 /**
- * @throws SyntaxError if the board contains bad number of tokens by player
  *
  *  Each player has the same number +-1.
  */
-function checkForWrongNumberOfTokens(boardState: BoardState) {
+function hasGoodNumberOfTokens(boardState: BoardState) {
   const nbTokens: CountNbTokens = countNbTokens(boardState);
   const hasNbTokensError = Math.abs(nbTokens.p1Count - nbTokens.p2Count) > 1;
-  if (hasNbTokensError) {
-    throw new SyntaxError(
-      "Given game state text contains wrong number of token(s)",
-    );
-  }
+  return !hasNbTokensError;
 }
 
 /**
  * @throws SyntaxError if the board is invalid
  */
 export function checkBoardStateConsistency(boardState: BoardState): void {
-  checkForProhibitedFlyingTokens(boardState);
-  checkForWrongNumberOfTokens(boardState);
+  if (!hasNoProhibitedFlyingTokens(boardState)) {
+    throw new SyntaxError("Given game state text contains missplaced token(s)");
+  }
+  if (!hasGoodNumberOfTokens(boardState)) {
+    throw new SyntaxError(
+      "Given game state text contains wrong number of token(s)",
+    );
+  }
+  if (!isValidBoardStateShape(boardState)) {
+    throw new SyntaxError(
+      "Given game state has bad number of square. It must be a [7x6] array",
+    );
+  }
 }
 
 export function createEmptyBoardState() {
@@ -210,5 +213,48 @@ export function isWinningToken(
 }
 
 export function isFull(board: BoardState): boolean {
-  return board.flat().every((cell) => cell !== PlayerNum.empty);
+  return board.flat().every((cell: PlayerNum) => cell !== PlayerNum.empty);
+}
+
+export function getBoardStateFromString(
+  state: string | undefined,
+): BoardState | undefined {
+  const boardState: Array<Array<number>> = [];
+  if (!state) {
+    return;
+  }
+
+  const valArray: Array<number> = state.split(",").map((e) => Number(e));
+
+  Array.from({ length: CONNECT_FOUR.NB_ROWS }, (_, i) => {
+    boardState.push(
+      valArray.slice(
+        i * CONNECT_FOUR.NB_COLUMNS,
+        (i + 1) * CONNECT_FOUR.NB_COLUMNS,
+      ),
+    );
+  });
+  return boardState;
+}
+
+export function initGame(
+  id: number,
+  gameState: GameState,
+  state: string | undefined,
+  gameType: GameType,
+): Game {
+  return {
+    id: id,
+    gameState: gameState,
+    initBoardState: state,
+    gameType: gameType,
+    stateVersion: 1,
+  };
+}
+
+export function isValidBoardStateShape(boardState: BoardState) {
+  return (
+    boardState.length === CONNECT_FOUR.NB_ROWS &&
+    boardState.every((raw) => raw.length === CONNECT_FOUR.NB_COLUMNS)
+  );
 }

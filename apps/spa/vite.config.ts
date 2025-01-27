@@ -1,14 +1,15 @@
 import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig({
-  plugins: [react()] as UserConfig["plugins"],
+  plugins: [react(), basicSsl()] as UserConfig["plugins"],
   server: {
     port: 3000,
   },
   build: {
-    outDir: "dist",
+    outDir: "build",
   },
   resolve: {
     alias: {
@@ -17,6 +18,7 @@ export default defineConfig({
       "@styles": path.resolve(__dirname, "src/styles"),
       "@hooks": path.resolve(__dirname, "src/hooks"),
       "@pages": path.resolve(__dirname, "src/pages"),
+      "@services": path.resolve(__dirname, "src/services"),
     },
   },
 });

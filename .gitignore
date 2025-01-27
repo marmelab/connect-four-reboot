@@ -1,9 +1,29 @@
 node_modules/
 dist/
+build
 .DS_Store
 coverage/
 .vscode
 
 # React Router
 /.react-router/
-/build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Optional npm cache directory
+.npm
+
+
+# 0x
+profile-*
+
+# vscode
+*code-workspace
+
+# generated code
+examples/typescript-server.js
+test/types/index.js
+

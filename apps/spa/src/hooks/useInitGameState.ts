@@ -1,24 +1,23 @@
-import type { GameState } from "../../../../packages/shared/types/gameState";
-import { CONNECT_FOUR } from "../../../../packages/shared/connect4.config";
-import { initGameState } from "../../../../packages/shared/lib/connect4";
+import type { Game } from "../../../../packages/shared/types/gameState";
+import { useState, useEffect } from "react";
+import { createGame } from "@services/api";
 
-const useInitGameState = (content: string | null): GameState | null => {
-  const boardState: Array<Array<number>> = [];
-  if (!content) {
-    return initGameState();
-  }
+const useInitGameState = (content: string | null): Game | null => {
+  const [game, setGame] = useState<Game | null>(null);
 
-  const valArray: Array<number> = content.split(",").map((e) => Number(e));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const game: Game = await createGame(content);
+        setGame(game);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  Array.from({ length: CONNECT_FOUR.NB_ROWS }, (_, i) => {
-    boardState.push(
-      valArray.slice(
-        i * CONNECT_FOUR.NB_COLUMNS,
-        (i + 1) * CONNECT_FOUR.NB_COLUMNS,
-      ),
-    );
-  });
-  return initGameState(boardState);
+    fetchData();
+  }, [content]);
+  return game;
 };
 
 export default useInitGameState;
