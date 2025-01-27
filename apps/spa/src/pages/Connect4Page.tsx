@@ -12,6 +12,7 @@ import GameInfos from "@components/GameInfos";
 export const PLAYER_NUM_QP = "playerNum";
 export const GAME_ID_QP = "gameId";
 export const SHARED_GAME_ID_QP = "sharedGameId";
+export const IS_SAME_SCREEN_QP = "isSameScreen";
 
 async function isGameStateNeedsUpdate(game: Game): Promise<boolean> {
   try {
@@ -29,6 +30,7 @@ const Connect4Page: React.FC = () => {
   const [searchParams] = useSearchParams();
   const gameId = searchParams.get(GAME_ID_QP);
   const playerNumParam = searchParams.get(PLAYER_NUM_QP);
+  const isSameScreen = searchParams.get(IS_SAME_SCREEN_QP) === "true";
 
   const [game, setGame] = useState<Game | null>(null);
   const [playerNum, setPlayerNum] = useState<PlayerNum | null>(null);
@@ -69,7 +71,7 @@ const Connect4Page: React.FC = () => {
       (game.gameState.victoryState.isDraw ||
         game.gameState.victoryState.player != PlayerNum.empty);
 
-    if (!gameId || isGameFinished) {
+    if (!gameId || isGameFinished || isSameScreen) {
       return;
     }
 
@@ -86,7 +88,23 @@ const Connect4Page: React.FC = () => {
 
     const intervalId = setInterval(pollGameState, 2000);
     return () => clearInterval(intervalId);
-  }, [game, gameId, updateGame]);
+  }, [game, gameId, isSameScreen, updateGame]);
+
+  // Same screen - handle gameState
+  useEffect(() => {
+    const isGameFinished =
+      game &&
+      (game.gameState.victoryState.isDraw ||
+        game.gameState.victoryState.player != PlayerNum.empty);
+
+    if (!gameId || isGameFinished) {
+      return;
+    }
+
+    if (!game) {
+      updateGame(gameId);
+    }
+  }, [game, gameId, isSameScreen, updateGame]);
 
   if (!game || !playerNum) {
     return <p>Loading game ...</p>;
@@ -97,7 +115,11 @@ const Connect4Page: React.FC = () => {
   return (
     <div id="connect4page">
       <div id="title-container">
-        <GameInfos gameState={game.gameState} playerNum={playerNum} />
+        <GameInfos
+          gameState={game.gameState}
+          playerNum={playerNum}
+          isSameScreen={isSameScreen}
+        />
         <ShareButton url={currentUrl} />
       </div>
       <GameGrid
@@ -106,6 +128,7 @@ const Connect4Page: React.FC = () => {
         onGridClick={() => {
           updateGame(`${gameId}`);
         }}
+        isSameScreen={isSameScreen}
       />
     </div>
   );

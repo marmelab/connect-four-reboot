@@ -11,10 +11,18 @@ interface ColumnProps {
   index: number;
   onColumnClick: () => void;
   playerNum: PlayerNum;
+  isSameScreen: boolean;
 }
 
-const Column = ({ game, index, onColumnClick, playerNum }: ColumnProps) => {
+const Column = ({
+  game,
+  index,
+  onColumnClick,
+  playerNum,
+  isSameScreen,
+}: ColumnProps) => {
   const isPlayerTurn =
+    isSameScreen ||
     (game.gameState.currentPlayer === PlayerNum.p1 &&
       playerNum === PlayerNum.p1) ||
     (!(game.gameState.currentPlayer === PlayerNum.p1) &&

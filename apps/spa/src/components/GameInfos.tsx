@@ -7,15 +7,20 @@ import {
 interface GameInfosProps {
   gameState: GameState;
   playerNum: PlayerNum;
+  isSameScreen: boolean;
 }
 
-const getInfoWhoIsPlaying = (gameState: GameState, playerNum: PlayerNum) => {
-  if (gameState.currentPlayer === playerNum) {
+const getInfoWhoIsPlaying = (
+  gameState: GameState,
+  playerNum: PlayerNum,
+  isSameScreen: boolean,
+) => {
+  if (gameState.currentPlayer === playerNum || isSameScreen) {
     return (
       <>
         <div className="player-infos">
           <div
-            className={`circle small active ${tokenColors[playerNum]}`}
+            className={`circle small active ${tokenColors[gameState.currentPlayer]}`}
           ></div>
           <span> it's your turn 🎯 </span>
         </div>
@@ -43,11 +48,15 @@ const getDrawInfos = () => {
   );
 };
 
-const getWinInfos = (winner: PlayerNum, player: PlayerNum) => {
-  if (player === winner) {
+const getWinInfos = (
+  winner: PlayerNum,
+  player: PlayerNum,
+  isSameScreen: boolean,
+) => {
+  if (player === winner || isSameScreen) {
     return (
       <div className="player-infos">
-        <div className={`circle small active ${tokenColors[player]}`}></div>
+        <div className={`circle small active ${tokenColors[winner]}`}></div>
         <span> You win 🥇 ! </span>
       </div>
     );
@@ -61,19 +70,19 @@ const getWinInfos = (winner: PlayerNum, player: PlayerNum) => {
   }
 };
 
-const GameInfos = ({ gameState, playerNum }: GameInfosProps) => {
+const GameInfos = ({ gameState, playerNum, isSameScreen }: GameInfosProps) => {
   if (gameState.victoryState.isDraw) {
     return <div className="game-infos">{getDrawInfos()}</div>;
   } else if (gameState.victoryState.player !== PlayerNum.empty) {
     return (
       <div className="game-infos">
-        {getWinInfos(gameState.victoryState.player, playerNum)}
+        {getWinInfos(gameState.victoryState.player, playerNum, isSameScreen)}
       </div>
     );
   } else {
     return (
       <div className="game-infos">
-        {getInfoWhoIsPlaying(gameState, playerNum)}
+        {getInfoWhoIsPlaying(gameState, playerNum, isSameScreen)}
       </div>
     );
   }

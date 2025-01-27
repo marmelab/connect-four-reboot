@@ -9,9 +9,15 @@ interface GameGridProps {
   game: Game;
   onGridClick: () => void;
   playerNum: PlayerNum;
+  isSameScreen: boolean;
 }
 
-const GameGrid = ({ game, playerNum, onGridClick }: GameGridProps) => {
+const GameGrid = ({
+  game,
+  playerNum,
+  onGridClick,
+  isSameScreen,
+}: GameGridProps) => {
   const columns = transpose(game.gameState.boardState);
 
   return (
@@ -25,6 +31,7 @@ const GameGrid = ({ game, playerNum, onGridClick }: GameGridProps) => {
               key={`column${index}`}
               playerNum={playerNum}
               onColumnClick={onGridClick}
+              isSameScreen={isSameScreen}
             />
           ))}
         </div>
